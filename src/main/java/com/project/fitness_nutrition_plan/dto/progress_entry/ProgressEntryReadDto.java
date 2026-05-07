@@ -16,5 +16,7 @@ public class ProgressEntryReadDto {
     private Double bodyFat;
     private String notes;
     private LocalDate date;
+
     private Long userId;
+    private String username;
 }
