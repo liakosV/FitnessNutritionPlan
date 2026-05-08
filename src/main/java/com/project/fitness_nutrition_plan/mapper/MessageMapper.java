@@ -1,5 +1,6 @@
 package com.project.fitness_nutrition_plan.mapper;
 
+import com.project.fitness_nutrition_plan.dto.message.MessageInsertDto;
 import com.project.fitness_nutrition_plan.dto.message.MessageReadDto;
 import com.project.fitness_nutrition_plan.model.Message;
 import com.project.fitness_nutrition_plan.model.User;
@@ -36,14 +37,14 @@ public class MessageMapper {
     }
 
     /**
-     * Maps a MessageReadDto object to a Message entity by transferring its data and associating a sender and receiver.
+     * Maps a MessageInsertDto object, along with sender and receiver User entities, to a Message entity.
      *
-     * @param dto the MessageReadDto object containing the message content to be mapped
+     * @param dto the MessageInsertDto containing details like content and receiver ID
      * @param sender the User entity representing the sender of the message
      * @param receiver the User entity representing the receiver of the message
-     * @return a new Message entity populated with the data from the provided DTO and associated users
+     * @return a new Message entity populated with the data from the provided DTO, sender, and receiver
      */
-    public Message mapToMessageEntity(MessageReadDto dto, User sender, User receiver) {
+    public Message mapToMessageEntity(MessageInsertDto dto, User sender, User receiver) {
         Message message = new Message();
 
         message.setContent(dto.getContent());
