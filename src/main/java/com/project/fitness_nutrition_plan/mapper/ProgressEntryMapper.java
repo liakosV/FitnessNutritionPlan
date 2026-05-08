@@ -1,5 +1,6 @@
 package com.project.fitness_nutrition_plan.mapper;
 
+import com.project.fitness_nutrition_plan.dto.progress_entry.ProgressEntryInsertDto;
 import com.project.fitness_nutrition_plan.dto.progress_entry.ProgressEntryReadDto;
 import com.project.fitness_nutrition_plan.model.ProgressEntry;
 import com.project.fitness_nutrition_plan.model.User;
@@ -35,13 +36,14 @@ public class ProgressEntryMapper {
     }
 
     /**
-     * Maps a ProgressEntryReadDto and a User entity to a ProgressEntry entity.
+     * Maps a ProgressEntryInsertDto object and a User entity to a new ProgressEntry entity.
+     * The method transfers data from the DTO and associates the provided User with the ProgressEntry.
      *
-     * @param dto the ProgressEntryReadDto containing weight, body fat, and notes data
-     * @param user the User entity associated with the progress entry
-     * @return a ProgressEntry entity populated with data from the provided DTO and associated user
+     * @param dto the ProgressEntryInsertDto containing progress entry details such as weight, body fat, and notes
+     * @param user the User entity to be associated with the mapped ProgressEntry
+     * @return a new ProgressEntry entity populated with data from the provided DTO and associated User
      */
-    public ProgressEntry mapToProgressEntry(ProgressEntryReadDto dto, User user) {
+    public ProgressEntry mapToProgressEntry(ProgressEntryInsertDto dto, User user) {
         ProgressEntry progressEntry = new ProgressEntry();
 
         progressEntry.setWeight(dto.getWeight());
