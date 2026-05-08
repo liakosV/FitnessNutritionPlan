@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class WorkoutDayReadDto {
     private Long id;
-    private String name;
+    private String dayName;
 
     private Long workoutProgramId;
     private String workoutProgramName;
