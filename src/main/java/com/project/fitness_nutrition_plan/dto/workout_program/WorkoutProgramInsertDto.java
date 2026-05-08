@@ -1,4 +1,4 @@
-package com.project.fitness_nutrition_plan.dto.wokrout_program;
+package com.project.fitness_nutrition_plan.dto.workout_program;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
