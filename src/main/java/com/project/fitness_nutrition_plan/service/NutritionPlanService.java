@@ -19,6 +19,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Service for managing nutrition plans, including creation, retrieval, updating, and deletion.
+ */
 @Service
 @RequiredArgsConstructor
 public class NutritionPlanService {
@@ -27,6 +30,16 @@ public class NutritionPlanService {
     private final NutritionPlanMapper nutritionPlanMapper;
     private final UserRepository userRepository;
 
+    /**
+     * Creates a new nutrition plan and assigns it to a specific user.
+     *
+     * @param insertDto the data transfer object containing details such as title, description, active status, and the ID of the assigned user
+     * @param coachUsername the username of the coach creating the nutrition plan
+     * @return a NutritionPlanReadDto containing the details of the newly created nutrition plan
+     * @throws AppObjectNotFoundException if the coach or assigned user is not found
+     * @throws AppObjectAccessDeniedException if the provided coach does not have the ROLE_COACH
+     * @throws AppObjectInvalidArgumentException if the assigned user does not have the ROLE_USER
+     */
     @Transactional
     public NutritionPlanReadDto createNutritionPlan(NutritionPlanInsertDto insertDto, String coachUsername) {
         User coach = userRepository.findByUsername(coachUsername)
@@ -47,6 +60,14 @@ public class NutritionPlanService {
         return nutritionPlanMapper.mapToNutritionPlanReadDto(nutritionPlanRepository.save(nutritionPlan));
     }
 
+    /**
+     * Updates an existing nutrition plan based on the provided UUID and update data.
+     *
+     * @param uuid the unique identifier of the nutrition plan to be updated
+     * @param updateDto the data transfer object containing updated nutrition plan details
+     * @return the updated nutrition plan as a NutritionPlanReadDto
+     * @throws AppObjectNotFoundException if the nutrition plan with the specified UUID does not exist
+     */
     @Transactional
     public NutritionPlanReadDto updateNutritionPlan(String uuid, NutritionPlanUpdateDto updateDto) {
         NutritionPlan nutritionPlan = nutritionPlanRepository.findByUuid(uuid)
@@ -56,6 +77,13 @@ public class NutritionPlanService {
         return nutritionPlanMapper.mapToNutritionPlanReadDto(nutritionPlan);
     }
 
+    /**
+     * Retrieves a NutritionPlanReadDto by its unique identifier (UUID).
+     *
+     * @param uuid the unique identifier of the nutrition plan
+     * @return the NutritionPlanReadDto corresponding to the given UUID
+     * @throws AppObjectNotFoundException if no nutrition plan is found with the provided UUID
+     */
     @Transactional(readOnly = true)
     public NutritionPlanReadDto getNutritionPlanByUuid(String uuid) {
         return nutritionPlanRepository.findByUuid(uuid)
@@ -63,6 +91,11 @@ public class NutritionPlanService {
                 .orElseThrow(() -> new AppObjectNotFoundException("NUTRITION_PLAN", "Nutrition plan not found"));
     }
 
+    /**
+     * Retrieves all nutrition plans available in the system.
+     *
+     * @return a list of NutritionPlanReadDto objects representing the nutrition plans
+     */
     @Transactional(readOnly = true)
     public List<NutritionPlanReadDto> getAllNutritionPlans() {
         return nutritionPlanRepository.findAll().stream()
@@ -70,6 +103,13 @@ public class NutritionPlanService {
                 .toList();
     }
 
+    /**
+     * Deletes a nutrition plan identified by its UUID.
+     *
+     * @param uuid the unique identifier of the nutrition plan to delete
+     * @return a ResponseMessageDto containing a confirmation code and message
+     * @throws AppObjectNotFoundException if the nutrition plan with the specified UUID is not found
+     */
     @Transactional
     public ResponseMessageDto deleteNutritionPlan(String uuid) {
         NutritionPlan nutritionPlan = nutritionPlanRepository.findByUuid(uuid)
