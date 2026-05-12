@@ -1,6 +1,7 @@
 package com.project.fitness_nutrition_plan.dto.message;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,6 @@ public class MessageInsertDto {
     @NotBlank(message = "Content cannot be empty")
     private String content;
 
-    @NotBlank(message = "Receiver id cannot be empty")
+    @NotNull(message = "Receiver id cannot be empty")
     private Long receiverId;
 }
