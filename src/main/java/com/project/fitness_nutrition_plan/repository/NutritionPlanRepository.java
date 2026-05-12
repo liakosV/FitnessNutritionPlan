@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NutritionPlanRepository extends JpaRepository<NutritionPlan, Long> {
+    Optional<NutritionPlan> findByUuid(String uuid);
 
     List<NutritionPlan> findByCoachId(Long coachId);
 
