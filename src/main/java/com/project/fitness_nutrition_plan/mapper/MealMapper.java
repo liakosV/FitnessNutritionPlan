@@ -31,6 +31,9 @@ public interface MealMapper {
      * @return a new Meal entity populated with data from the provided DTO and associated NutritionPlan
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "nutritionPlan", source = "nutritionPlan")
     Meal mapToMeal(MealInsertDto dto, NutritionPlan nutritionPlan);
 
@@ -43,6 +46,9 @@ public interface MealMapper {
      */
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "nutritionPlan", ignore = true)
     void updateMealFromDto(MealUpdateDto dto, @MappingTarget Meal meal);
 }
