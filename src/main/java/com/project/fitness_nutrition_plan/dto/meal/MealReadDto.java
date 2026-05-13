@@ -10,6 +10,8 @@ import lombok.NoArgsConstructor;
 public class MealReadDto {
     
     private Long id;
+
+    private String uuid;
     
     private String name;
 
