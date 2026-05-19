@@ -14,6 +14,6 @@ public class MessageInsertDto {
     @NotBlank(message = "Content cannot be empty")
     private String content;
 
-    @NotNull(message = "Receiver id cannot be empty")
-    private Long receiverId;
+    @NotNull(message = "Receiver uuid cannot be empty")
+    private String receiverUuid;
 }
