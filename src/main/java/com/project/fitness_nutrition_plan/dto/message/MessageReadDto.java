@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -13,12 +12,13 @@ import java.time.LocalDateTime;
 public class MessageReadDto {
 
     private Long id;
+    private String uuid;
     private String content;
     private LocalDateTime timestamp;
 
-    private Long senderId;
+    private String senderUuid;
     private String senderUsername;
 
-    private Long receiverId;
+    private String receiverUuid;
     private String receiverUsername;
 }
