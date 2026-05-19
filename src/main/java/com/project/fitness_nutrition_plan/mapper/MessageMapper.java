@@ -24,13 +24,14 @@ public class MessageMapper {
         var dto = new MessageReadDto();
 
         dto.setId(message.getId());
+        dto.setUuid(message.getUuid());
         dto.setContent(message.getContent());
         dto.setTimestamp(message.getTimeStamp());
 
-        dto.setSenderId(message.getSender().getId());
+        dto.setSenderUuid(message.getSender().getUuid());
         dto.setSenderUsername(message.getSender().getUsername());
 
-        dto.setReceiverId(message.getReceiver().getId());
+        dto.setReceiverUuid(message.getReceiver().getUuid());
         dto.setReceiverUsername(message.getReceiver().getUsername());
 
         return dto;
