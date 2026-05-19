@@ -12,6 +12,7 @@ import java.time.LocalDate;
 public class ProgressEntryReadDto {
 
     private Long id;
+    private String uuid;
     private Double weight;
     private Double bodyFat;
     private String notes;
