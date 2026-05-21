@@ -18,5 +18,5 @@ public class WorkoutProgramInsertDto {
     @NotBlank(message = "Description cannot be empty")
     private String description;
 
-    private List<Long> assignedUserIds;
+    private List<String> assignedUserUuids;
 }
