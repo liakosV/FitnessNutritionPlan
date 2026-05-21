@@ -18,9 +18,9 @@ public class WorkoutProgramReadDto {
     private String description;
     private boolean active;
 
-    private Long coachId;
+    private String coachUuid;
     private String coachUsername;
 
-    private List<Long> assignedUserIds;
+    private List<String> assignedUserUuids;
     private List<String> assignedUsernames;
 }
