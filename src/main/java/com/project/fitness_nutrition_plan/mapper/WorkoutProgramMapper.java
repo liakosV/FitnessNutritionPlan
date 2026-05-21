@@ -31,13 +31,13 @@ public class WorkoutProgramMapper {
         dto.setDescription(workoutProgram.getDescription());
         dto.setActive(workoutProgram.isActive());
 
-        dto.setCoachId(workoutProgram.getCoach().getId());
+        dto.setCoachUuid(workoutProgram.getCoach().getUuid());
         dto.setCoachUsername(workoutProgram.getCoach().getUsername());
 
-        dto.setAssignedUserIds(assignedUsers == null
+        dto.setAssignedUserUuids(assignedUsers == null
                 ? List.of()
                 : assignedUsers.stream()
-                .map(User::getId)
+                .map(User::getUuid)
                 .toList());
 
         dto.setAssignedUsernames(assignedUsers == null
