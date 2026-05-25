@@ -12,6 +12,7 @@ import com.project.fitness_nutrition_plan.model.User;
 import com.project.fitness_nutrition_plan.repository.MessageRepository;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class MessagesService {
      * @return a MessageReadDto containing the details of the sent message
      * @throws AppObjectInvalidArgumentException if the sender and receiver UUIDs are the same
      */
+    @PreAuthorize("principal.uuid == #senderUuid")
     @Transactional
     public MessageReadDto sendMessage(MessageInsertDto insertDto, String senderUuid) {
         if (senderUuid.equals(insertDto.getReceiverUuid())) {
@@ -59,6 +61,7 @@ public class MessagesService {
      * @param currentUserUuid the unique identifier of the current user attempting to access the message
      * @return a MessageReadDto object containing the details of the retrieved message
      */
+    @PreAuthorize("principal.uuid == #currentUserUuid")
     @Transactional(readOnly = true)
     public MessageReadDto getMessageByUuid(String messageUuid, String currentUserUuid) {
         Message message = getMessageByUuid(messageUuid);
@@ -74,6 +77,7 @@ public class MessagesService {
      * @param senderUuid the UUID of the user whose sent messages are to be retrieved
      * @return a list of MessageReadDto objects representing the sent messages
      */
+    @PreAuthorize("principal.uuid == #senderUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getSentMessages(String senderUuid) {
         getUserByUuid(senderUuid);
@@ -90,6 +94,7 @@ public class MessagesService {
      * @param receiverUuid the unique identifier of the user who received the messages
      * @return a list of MessageReadDto objects representing the received messages
      */
+    @PreAuthorize("principal.uuid == #receiverUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getReceivedMessages(String receiverUuid) {
         getUserByUuid(receiverUuid);
@@ -110,6 +115,7 @@ public class MessagesService {
      * @return a list of MessageReadDto objects representing the messages in the conversation
      * @throws AppObjectInvalidArgumentException if the provided UUIDs refer to the same user
      */
+    @PreAuthorize("principal.uuid == #currentUserUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getConversation(String currentUserUuid, String otherUserUuid) {
         if (currentUserUuid.equals(otherUserUuid)) {
@@ -133,6 +139,7 @@ public class MessagesService {
      * @param currentUserUuid the unique identifier of the user attempting to delete the message
      * @return a ResponseMessageDto containing the status code and confirmation message
      */
+    @PreAuthorize("principal.uuid == #currentUserUuid")
     @Transactional
     public ResponseMessageDto deleteMessage(String messageUuid, String currentUserUuid) {
         Message message = getMessageByUuid(messageUuid);
