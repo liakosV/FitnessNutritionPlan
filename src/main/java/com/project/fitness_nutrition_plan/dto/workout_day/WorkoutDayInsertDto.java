@@ -14,6 +14,6 @@ public class WorkoutDayInsertDto {
     @NotBlank(message = "Day name cannot be empty")
     private String dayName;
 
-    @NotNull(message = "Workout program id cannot be empty")
-    private Long workoutProgramId;
+    @NotNull(message = "Workout program uuid cannot be empty")
+    private String workoutProgramUuid;
 }
