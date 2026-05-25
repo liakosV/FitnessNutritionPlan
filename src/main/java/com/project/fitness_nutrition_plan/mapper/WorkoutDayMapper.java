@@ -32,10 +32,16 @@ public interface WorkoutDayMapper {
      * @return a new WorkoutDay entity populated with the data from the DTO and the associated WorkoutProgram
      */
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workoutProgram", source = "workoutProgram")
     WorkoutDay mapToWorkoutDay(WorkoutDayInsertDto dto, WorkoutProgram workoutProgram);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workoutProgram", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateWorkoutDayFromDto(WorkoutDayUpdateDto dto, @MappingTarget WorkoutDay workoutDay);
