@@ -11,6 +11,7 @@ import com.project.fitness_nutrition_plan.model.WorkoutProgram;
 import com.project.fitness_nutrition_plan.repository.WorkoutDayRepository;
 import com.project.fitness_nutrition_plan.repository.WorkoutProgramRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class WorkoutDaysService {
      * @return a WorkoutDayReadDto representing the newly created WorkoutDay
      * @throws AppObjectNotFoundException if the specified workout program does not exist
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutProgramSecurity.isCoachOwner(#insertDto.workoutProgramUuid, principal.uuid)")
     @Transactional
     public WorkoutDayReadDto createWorkoutDay(WorkoutDayInsertDto insertDto) {
         WorkoutProgram workoutProgram = workoutProgramRepository.findByUuid(insertDto.getWorkoutProgramUuid())
@@ -53,6 +55,7 @@ public class WorkoutDaysService {
      * @param workoutDayUuid the unique identifier of the workout day to be updated
      * @return a WorkoutDayReadDto containing the updated workout day details
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutDaySecurity.isCoachOwner(#workoutDayUuid, principal.uuid)")
     @Transactional
     public WorkoutDayReadDto updateWorkoutDay(WorkoutDayUpdateDto updateDto, String workoutDayUuid) {
         WorkoutDay workoutDay = getWorkoutDayByUuid(workoutDayUuid);
@@ -68,6 +71,7 @@ public class WorkoutDaysService {
      * @return a list of WorkoutDayReadDto objects representing the workout days of the specified workout program
      * @throws AppObjectNotFoundException if the workout program with the provided UUID does not exist
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutProgramSecurity.canAccessWorkoutProgram(#workoutProgramUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public List<WorkoutDayReadDto> getWorkoutDaysByWorkoutProgram(String workoutProgramUuid) {
         WorkoutProgram workoutProgram = workoutProgramRepository.findByUuid(workoutProgramUuid)
@@ -85,6 +89,7 @@ public class WorkoutDaysService {
      * @param workoutDayUuid the UUID of the workout day to be deleted
      * @return a ResponseMessageDto containing the deletion status and message
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutDaySecurity.isCoachOwner(#workoutDayUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteWorkoutDay(String workoutDayUuid) {
         WorkoutDay workoutDay = getWorkoutDayByUuid(workoutDayUuid);
