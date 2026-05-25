@@ -10,6 +10,7 @@ import com.project.fitness_nutrition_plan.model.User;
 import com.project.fitness_nutrition_plan.repository.ProgressEntryRepository;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +38,7 @@ public class ProgressEntryService {
      * @return a DTO containing details of the newly created progress entry
      * @throws AppObjectNotFoundException if the user with the given UUID is not found
      */
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COACH') or principal.uuid == #userUuid")
     @Transactional
     public ProgressEntryReadDto createProgressEntry(ProgressEntryInsertDto insertDto, String userUuid) {
         User user = userRepository.findByUuid(userUuid)
@@ -57,6 +59,7 @@ public class ProgressEntryService {
      * @return a list of ProgressEntryReadDto objects representing the progress entries of the specified user
      * @throws AppObjectNotFoundException if the user with the given UUID is not found
      */
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COACH') or principal.uuid == #uuid")
     @Transactional(readOnly = true)
     public List<ProgressEntryReadDto> getProgressEntriesByUserUuid(String uuid) {
         User user = userRepository.findByUuid(uuid)
@@ -74,6 +77,7 @@ public class ProgressEntryService {
      * @return a ResponseMessageDto containing the success message and code
      * @throws AppObjectNotFoundException if no progress entry is found with the provided UUID
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @progressEntrySecurity.isOwner(#progressEntryUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteProgressEntry(String progressEntryUuid) {
         ProgressEntry progressEntry = progressEntryRepository.findByUuid(progressEntryUuid)
