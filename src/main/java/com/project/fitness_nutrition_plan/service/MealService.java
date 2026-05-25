@@ -11,6 +11,7 @@ import com.project.fitness_nutrition_plan.model.NutritionPlan;
 import com.project.fitness_nutrition_plan.repository.MealRepository;
 import com.project.fitness_nutrition_plan.repository.NutritionPlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +25,7 @@ public class MealService {
     private final NutritionPlanRepository nutritionPlanRepository;
     private final MealMapper mealMapper;
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.isCoachOwner(#nutritionPlanUuid, principal.uuid)")
     @Transactional
     public MealReadDto createMeal(MealInsertDto insertDto, String nutritionPlanUuid) {
 
@@ -37,6 +39,7 @@ public class MealService {
         return mealMapper.mapToMealReadDto(savedMeal);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.isCoachOwner(#mealUuid, principal.uuid)")
     @Transactional
     public MealReadDto updateMeal(MealUpdateDto updateDto, String mealUuid) {
         Meal meal = mealRepository.findByUuid(mealUuid)
@@ -47,6 +50,7 @@ public class MealService {
         return mealMapper.mapToMealReadDto(meal);
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.canAccessMeal(#mealUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public MealReadDto getMealByUuid(String mealUuid) {
         return mealRepository.findByUuid(mealUuid)
@@ -54,6 +58,7 @@ public class MealService {
                 .orElseThrow(() -> new AppObjectNotFoundException("MEAL", "Meal not found"));
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public List<MealReadDto> getAllMeals() {
         return mealRepository.findAll()
@@ -61,6 +66,7 @@ public class MealService {
                 .toList();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.canAccessNutritionPlan(#nutritionPlanUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public List<MealReadDto> getMealsByNutritionPlanUuid(String nutritionPlanUuid) {
 
@@ -73,6 +79,7 @@ public class MealService {
                 .toList();
     }
 
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.isCoachOwner(#mealUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteMeal(String mealUuid) {
         Meal meal = mealRepository.findByUuid(mealUuid)
