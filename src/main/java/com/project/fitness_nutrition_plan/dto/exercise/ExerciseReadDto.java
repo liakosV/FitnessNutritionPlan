@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 public class ExerciseReadDto {
 
     private Long id;
+    private String uuid;
     private String name;
     private Integer sets;
     private Integer reps;
