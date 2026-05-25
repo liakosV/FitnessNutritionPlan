@@ -14,6 +14,7 @@ import com.project.fitness_nutrition_plan.model.static_data.Role;
 import com.project.fitness_nutrition_plan.repository.NutritionPlanRepository;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,6 +41,7 @@ public class NutritionPlanService {
      * @throws AppObjectAccessDeniedException if the provided coach does not have the ROLE_COACH
      * @throws AppObjectInvalidArgumentException if the assigned user does not have the ROLE_USER
      */
+    @PreAuthorize("hasAuthority('ROLE_COACH') and authentication.name == #coachUsername")
     @Transactional
     public NutritionPlanReadDto createNutritionPlan(NutritionPlanInsertDto insertDto, String coachUsername) {
         User coach = userRepository.findByUsername(coachUsername)
@@ -68,6 +70,7 @@ public class NutritionPlanService {
      * @return the updated nutrition plan as a NutritionPlanReadDto
      * @throws AppObjectNotFoundException if the nutrition plan with the specified UUID does not exist
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.isCoachOwner(#uuid, principal.uuid)")
     @Transactional
     public NutritionPlanReadDto updateNutritionPlan(String uuid, NutritionPlanUpdateDto updateDto) {
         NutritionPlan nutritionPlan = nutritionPlanRepository.findByUuid(uuid)
@@ -84,6 +87,7 @@ public class NutritionPlanService {
      * @return the NutritionPlanReadDto corresponding to the given UUID
      * @throws AppObjectNotFoundException if no nutrition plan is found with the provided UUID
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.canAccessNutritionPlan(#uuid, principal.uuid)")
     @Transactional(readOnly = true)
     public NutritionPlanReadDto getNutritionPlanByUuid(String uuid) {
         return nutritionPlanRepository.findByUuid(uuid)
@@ -96,6 +100,7 @@ public class NutritionPlanService {
      *
      * @return a list of NutritionPlanReadDto objects representing the nutrition plans
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public List<NutritionPlanReadDto> getAllNutritionPlans() {
         return nutritionPlanRepository.findAll().stream()
@@ -110,6 +115,7 @@ public class NutritionPlanService {
      * @return a ResponseMessageDto containing a confirmation code and message
      * @throws AppObjectNotFoundException if the nutrition plan with the specified UUID is not found
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.isCoachOwner(#uuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteNutritionPlan(String uuid) {
         NutritionPlan nutritionPlan = nutritionPlanRepository.findByUuid(uuid)
