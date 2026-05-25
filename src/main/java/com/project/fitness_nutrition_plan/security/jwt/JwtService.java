@@ -1,5 +1,6 @@
 package com.project.fitness_nutrition_plan.security.jwt;
 
+import com.project.fitness_nutrition_plan.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -27,8 +28,11 @@ public class JwtService {
     }
 
     public String generateToken(UserDetails userDetails) {
+        User user = (User) userDetails;
+
         return Jwts.builder()
                 .subject(userDetails.getUsername())
+                .claim("role", user.getRole().name())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + jwtExpiration))
                 .signWith(getSigninKey())
