@@ -14,10 +14,16 @@ public interface ExerciseMapper {
     ExerciseReadDto mapToExerciseReadDto(Exercise exercise);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workoutDay", source = "workoutDay")
     Exercise mapToExercise(ExerciseInsertDto dto, WorkoutDay workoutDay);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "uuid", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
+    @Mapping(target = "updatedAt", ignore = true)
     @Mapping(target = "workoutDay", ignore = true)
     @BeanMapping(nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
     void updateExerciseFromDto(ExerciseUpdateDto dto, @MappingTarget Exercise exercise);
