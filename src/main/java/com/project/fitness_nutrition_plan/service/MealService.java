@@ -17,6 +17,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Service class for managing Meal entities and related operations.
+ */
 @Service
 @RequiredArgsConstructor
 public class MealService {
@@ -25,6 +28,14 @@ public class MealService {
     private final NutritionPlanRepository nutritionPlanRepository;
     private final MealMapper mealMapper;
 
+    /**
+     * Creates a new meal and associates it with an existing nutrition plan.
+     *
+     * @param insertDto the data transfer object containing details of the meal to be created, including name, calories, macronutrients, and the nutrition plan ID
+     * @param nutritionPlanUuid the UUID of the nutrition plan to associate the new meal with
+     * @return a MealReadDto containing the details of the newly created meal
+     * @throws AppObjectNotFoundException if the specified nutrition plan is not found
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.isCoachOwner(#nutritionPlanUuid, principal.uuid)")
     @Transactional
     public MealReadDto createMeal(MealInsertDto insertDto, String nutritionPlanUuid) {
@@ -39,6 +50,14 @@ public class MealService {
         return mealMapper.mapToMealReadDto(savedMeal);
     }
 
+    /**
+     * Updates an existing meal with the data provided in the MealUpdateDto and returns the updated meal as a MealReadDto.
+     *
+     * @param updateDto the object containing the updated meal data
+     * @param mealUuid the unique identifier of the meal to be updated
+     * @return a MealReadDto representing the updated meal
+     * @throws AppObjectNotFoundException if the meal with the given UUID is not found
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.isCoachOwner(#mealUuid, principal.uuid)")
     @Transactional
     public MealReadDto updateMeal(MealUpdateDto updateDto, String mealUuid) {
@@ -50,6 +69,13 @@ public class MealService {
         return mealMapper.mapToMealReadDto(meal);
     }
 
+    /**
+     * Retrieves a meal by its unique identifier (UUID). Only accessible by users with proper authorization.
+     *
+     * @param mealUuid the UUID of the meal to retrieve
+     * @return a MealReadDto representing the meal data
+     * @throws AppObjectNotFoundException if the meal with the specified UUID is not found
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.canAccessMeal(#mealUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public MealReadDto getMealByUuid(String mealUuid) {
@@ -58,6 +84,11 @@ public class MealService {
                 .orElseThrow(() -> new AppObjectNotFoundException("MEAL", "Meal not found"));
     }
 
+    /**
+     * Retrieves all meals from the repository and maps them to MealReadDto objects.
+     *
+     * @return a list of MealReadDto objects representing the meals
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public List<MealReadDto> getAllMeals() {
@@ -66,6 +97,14 @@ public class MealService {
                 .toList();
     }
 
+    /**
+     * Retrieves a list of meals associated with a specified nutrition plan UUID.
+     * Ensures the requesting user has appropriate permissions to access the nutrition plan.
+     *
+     * @param nutritionPlanUuid the UUID of the nutrition plan whose associated meals are to be retrieved
+     * @return a list of MealReadDto containing details of the meals associated with the specified nutrition plan
+     * @throws AppObjectNotFoundException if the nutrition plan with the specified UUID is not found
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @nutritionPlanSecurity.canAccessNutritionPlan(#nutritionPlanUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public List<MealReadDto> getMealsByNutritionPlanUuid(String nutritionPlanUuid) {
@@ -79,6 +118,14 @@ public class MealService {
                 .toList();
     }
 
+    /**
+     * Deletes a meal identified by the given UUID. The method checks if the caller has sufficient
+     * authorization and ensures the meal exists before performing the deletion.
+     *
+     * @param mealUuid the unique identifier of the meal to be deleted
+     * @return a ResponseMessageDto containing a success message and code upon successful deletion
+     * @throws AppObjectNotFoundException if the meal with the provided UUID does not exist
+     */
     @PreAuthorize("hasAuthority('ROLE_ADMIN') or @mealSecurity.isCoachOwner(#mealUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteMeal(String mealUuid) {
