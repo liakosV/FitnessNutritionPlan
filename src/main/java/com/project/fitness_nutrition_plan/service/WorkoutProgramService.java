@@ -15,6 +15,7 @@ import com.project.fitness_nutrition_plan.model.static_data.Role;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import com.project.fitness_nutrition_plan.repository.WorkoutProgramRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,6 +45,7 @@ public class WorkoutProgramService {
      * @throws AppObjectAccessDeniedException  if the given user is not a coach
      * @throws AppObjectInvalidArgumentException if any of the assigned users is not a client
      */
+    @PreAuthorize("hasAuthority('ROLE_COACH') and principal.uuid == #coachUuid")
     @Transactional
     public WorkoutProgramReadDto createWorkoutProgram(WorkoutProgramInsertDto insertDto, String coachUuid) {
         if (workoutProgramRepository.findByName(insertDto.getName()).isPresent()) {
@@ -85,6 +87,7 @@ public class WorkoutProgramService {
      * @throws AppObjectAlreadyExistsException if the workout program name already exists
      * @throws AppObjectNotFoundException if the workout program with the specified UUID is not found
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutProgramSecurity.isCoachOwner(#workoutProgramUuid, principal.uuid)")
     @Transactional
     public WorkoutProgramReadDto updateWorkoutProgram(WorkoutProgramUpdateDto updateDto, String workoutProgramUuid) {
         WorkoutProgram workoutProgram = getWorkoutProgramByUuid(workoutProgramUuid);
@@ -104,6 +107,7 @@ public class WorkoutProgramService {
      *
      * @return a list of {@link WorkoutProgramReadDto} representing all workout programs
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional(readOnly = true)
     public List<WorkoutProgramReadDto> getAllWorkoutPrograms() {
         return workoutProgramRepository.findAll()
@@ -118,6 +122,7 @@ public class WorkoutProgramService {
      * @param coachUuid the unique identifier of the coach whose workout programs are to be retrieved
      * @return a list of {@link WorkoutProgramReadDto} containing the workout program details for the specified coach
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #coachUuid")
     @Transactional(readOnly = true)
     public List<WorkoutProgramReadDto> getWorkoutProgramsByCoach(String coachUuid) {
         User coach = userRepository.findByUuid(coachUuid)
@@ -139,6 +144,7 @@ public class WorkoutProgramService {
      * @param workoutProgramUuid the unique identifier of the workout program to be deleted
      * @return a ResponseMessageDto indicating the outcome of the delete operation
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutProgramSecurity.isCoachOwner(#workoutProgramUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteWorkoutProgram(String workoutProgramUuid) {
         WorkoutProgram workoutProgram = getWorkoutProgramByUuid(workoutProgramUuid);
