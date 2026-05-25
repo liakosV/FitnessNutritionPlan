@@ -4,8 +4,11 @@ import com.project.fitness_nutrition_plan.model.WorkoutDay;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface WorkoutDayRepository extends JpaRepository<WorkoutDay, Long> {
 
-    List<WorkoutDay> findByWorkoutProgramId(Long workoutProgramId);
+    Optional<WorkoutDay> findByUuid(String uuid);
+
+    List<WorkoutDay> findByWorkoutProgramUuid(String workoutProgramUuid);
 }
