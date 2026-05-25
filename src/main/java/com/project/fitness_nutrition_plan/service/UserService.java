@@ -14,6 +14,7 @@ import com.project.fitness_nutrition_plan.model.User;
 import com.project.fitness_nutrition_plan.model.static_data.Role;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +66,7 @@ public class UserService {
      * @throws AppObjectNotFoundException if the user with the given UUID is not found
      * @throws AppObjectAlreadyExistsException if the updated username or email already exists
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #uuid")
     @Transactional
     public UserReadDto updateUser(UserUpdateDto updateDto, String uuid) {
         User user = userRepository.findByUuid(uuid)
@@ -93,6 +95,7 @@ public class UserService {
      * @return the UserReadDto representing the user's data
      * @throws AppObjectNotFoundException if no user with the given UUID is found
      */
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COACH') or principal.uuid == #uuid")
     @Transactional(readOnly = true)
     public UserReadDto getUserByUuid(String uuid) {
         return userRepository.findByUuid(uuid)
@@ -105,6 +108,7 @@ public class UserService {
      *
      * @return a list of UserReadDto instances representing all users
      */
+    @PreAuthorize("hasAnyAuthority('ROLE_ADMIN', 'ROLE_COACH')")
     @Transactional(readOnly = true)
     public List<UserReadDto> getAllUsers() {
         return userRepository.findAll().stream()
@@ -119,6 +123,7 @@ public class UserService {
      * @return a ResponseMessageDto containing the status code and message of the deletion operation
      * @throws AppObjectNotFoundException if the user with the specified UUID is not found
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public ResponseMessageDto deleteUser(String uuid) {
         User user = userRepository.findByUuid(uuid)
@@ -140,6 +145,7 @@ public class UserService {
      * @throws AppObjectUnauthorizedException if the old password provided is incorrect
      * @throws AppObjectIllegalStateException if the new password is the same as the old password
      */
+    @PreAuthorize("principal.uuid == #uuid")
     @Transactional
     public UserReadDto changePassword(String uuid, ChangePasswordDto changePasswordDto) {
         User user = userRepository.findByUuid(uuid)
@@ -169,6 +175,7 @@ public class UserService {
      * @throws AppObjectNotFoundException if the user with the given UUID is not found
      * @throws AppObjectIllegalStateException if the user already has the specified role
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN')")
     @Transactional
     public UserReadDto changeUserRole(String uuid, Role role) {
         User user = userRepository.findByUuid(uuid)
