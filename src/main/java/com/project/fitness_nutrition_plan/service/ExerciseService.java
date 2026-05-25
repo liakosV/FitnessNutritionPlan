@@ -11,6 +11,7 @@ import com.project.fitness_nutrition_plan.model.WorkoutDay;
 import com.project.fitness_nutrition_plan.repository.ExerciseRepository;
 import com.project.fitness_nutrition_plan.repository.WorkoutDayRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -35,6 +36,7 @@ public class ExerciseService {
      * @param workoutDayUuid the unique identifier of the workout day with which the exercise is associated
      * @return the read data transfer object representing the created exercise
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutDaySecurity.isCoachOwner(#workoutDayUuid, principal.uuid)")
     @Transactional
     public ExerciseReadDto createExercise(ExerciseInsertDto insertDto, String workoutDayUuid) {
         WorkoutDay workoutDay = workoutDayRepository.findByUuid(workoutDayUuid)
@@ -53,6 +55,7 @@ public class ExerciseService {
      * @param exerciseUuid the unique identifier of the exercise to be updated
      * @return the updated exercise represented as a data transfer object
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @exerciseSecurity.isCoachOwner(#exerciseUuid, principal.uuid)")
     @Transactional
     public ExerciseReadDto updateExercise(ExerciseUpdateDto updateDto, String exerciseUuid) {
         Exercise exercise = getExerciseByUuid(exerciseUuid);
@@ -68,6 +71,7 @@ public class ExerciseService {
      * @return a list of ExerciseReadDto objects representing the exercises for the given workout day
      * @throws AppObjectNotFoundException if the workout day with the specified UUID does not exist
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @workoutDaySecurity.canAccessWorkoutDay(#workoutDayUuid, principal.uuid)")
     @Transactional(readOnly = true)
     public List<ExerciseReadDto> getExerciseByWorkoutDay(String workoutDayUuid) {
         WorkoutDay workoutDay = workoutDayRepository.findByUuid(workoutDayUuid)
@@ -85,6 +89,7 @@ public class ExerciseService {
      * @param exerciseUuid the unique identifier of the exercise to delete
      * @return a response message indicating the successful deletion of the exercise
      */
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or @exerciseSecurity.isCoachOwner(#exerciseUuid, principal.uuid)")
     @Transactional
     public ResponseMessageDto deleteExercise(String exerciseUuid) {
         Exercise exercise = getExerciseByUuid(exerciseUuid);
