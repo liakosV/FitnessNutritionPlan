@@ -1,0 +1,70 @@
+package com.project.fitness_nutrition_plan.api;
+
+import com.project.fitness_nutrition_plan.dto.response.ResponseMessageDto;
+import com.project.fitness_nutrition_plan.dto.user.ChangePasswordDto;
+import com.project.fitness_nutrition_plan.dto.user.UserReadDto;
+import com.project.fitness_nutrition_plan.dto.user.UserUpdateDto;
+import com.project.fitness_nutrition_plan.model.static_data.Role;
+import com.project.fitness_nutrition_plan.service.UserService;
+import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+
+
+@RestController
+@RequestMapping("api/user")
+@RequiredArgsConstructor
+public class UserController {
+
+    private final UserService userService;
+
+    @GetMapping("/{uuid}")
+    public ResponseEntity<UserReadDto> getUserByUuid(@PathVariable String uuid) {
+        return ResponseEntity.ok(userService.getUserByUuid(uuid));
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UserReadDto>> getAllUsers() {
+        return ResponseEntity.ok(userService.getAllUsers());
+    }
+
+    @PatchMapping("/{uuid}")
+    public ResponseEntity<UserReadDto> updateUser(
+            @PathVariable String uuid,
+            @Valid @RequestBody UserUpdateDto updateDto) {
+
+        UserReadDto userReadDto = userService.updateUser(updateDto, uuid);
+
+        return ResponseEntity.ok(userReadDto);
+    }
+
+    @DeleteMapping("/{uuid}")
+    public ResponseEntity<ResponseMessageDto> deleteUser(@PathVariable String uuid) {
+        return ResponseEntity.ok(userService.deleteUser(uuid));
+    }
+
+    @PatchMapping("/{uuid}/password")
+    public ResponseEntity<UserReadDto> changePassword(
+            @PathVariable String uuid,
+            @RequestBody ChangePasswordDto dto) {
+
+        UserReadDto userReadDto = userService.changePassword(uuid, dto);
+
+        return ResponseEntity.ok(userReadDto);
+    }
+
+    @PatchMapping("/{uuid}/role")
+    public ResponseEntity<UserReadDto> changeUserRole(
+            @PathVariable String uuid,
+            @Valid @RequestBody Role role) {
+
+        UserReadDto userReadDto = userService.changeUserRole(uuid, role);
+
+        return ResponseEntity.ok(userReadDto);
+    }
+
+
+}
