@@ -51,6 +51,8 @@ public class UserService {
         }
 
         User user = userMapper.mapToUserEntity(insertDto);
+        user.setRole(Role.ROLE_USER);
+
         User savedUser = userRepository.save(user);
 
         return userMapper.mapToUserReadDto(savedUser);
