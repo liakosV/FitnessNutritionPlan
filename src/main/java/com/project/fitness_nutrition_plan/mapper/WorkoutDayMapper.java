@@ -19,7 +19,7 @@ public interface WorkoutDayMapper {
      * @param workoutDay the WorkoutDay entity to be mapped
      * @return a WorkoutDayReadDto containing data from the provided WorkoutDay entity
      */
-    @Mapping(target = "workoutProgramId", source = "workoutProgram.id")
+    @Mapping(target = "workoutProgramUuid", source = "workoutProgram.uuid")
     @Mapping(target = "workoutProgramName", source = "workoutProgram.name")
     WorkoutDayReadDto mapToWorkoutDayReadDto(WorkoutDay workoutDay);
 
