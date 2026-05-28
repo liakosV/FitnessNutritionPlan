@@ -26,7 +26,4 @@ public class ExerciseInsertDto {
     @NotNull(message = "Rest time cannot be empty")
     @Min(value = 1, message = "Rest time must be at least 1")
     private Integer restTime;
-
-    @NotNull(message = "Workout day is required")
-    private Long workoutDayId;
 }
