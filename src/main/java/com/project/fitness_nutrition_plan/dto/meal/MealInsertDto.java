@@ -25,7 +25,4 @@ public class MealInsertDto {
 
     @NotNull(message = "Fats cannot be empty")
     private Double fat;
-
-    @NotNull(message = "Nutrition plan is required")
-    private Long nutritionPlanId;
 }
