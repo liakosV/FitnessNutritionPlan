@@ -12,5 +12,5 @@ public interface MealRepository extends JpaRepository<Meal, Long> {
 
     List<Meal> findByNutritionPlanUuid(String nutritionPlanUuid);
 
-    boolean existByUuid(String uuid);
+    boolean existsByUuid(String uuid);
 }
