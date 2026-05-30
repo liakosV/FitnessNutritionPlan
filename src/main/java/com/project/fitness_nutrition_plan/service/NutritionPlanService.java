@@ -41,7 +41,7 @@ public class NutritionPlanService {
      * @throws AppObjectAccessDeniedException if the provided coach does not have the ROLE_COACH
      * @throws AppObjectInvalidArgumentException if the assigned user does not have the ROLE_USER
      */
-    @PreAuthorize("hasAuthority('ROLE_COACH') and authentication.name == #coachUsername")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (hasAuthority('ROLE_COACH') and authentication.name == #coachUsername)")
     @Transactional
     public NutritionPlanReadDto createNutritionPlan(NutritionPlanInsertDto insertDto, String coachUsername) {
         User coach = userRepository.findByUsername(coachUsername)
@@ -50,8 +50,8 @@ public class NutritionPlanService {
         User assignedUser = userRepository.findById(insertDto.getAssignedUserId())
                 .orElseThrow(() -> new AppObjectNotFoundException("USER", "Assigned user not found"));
 
-        if (coach.getRole() != Role.ROLE_COACH) {
-            throw new AppObjectAccessDeniedException("COACH", "Only coaches can create nutrition plans");
+        if (coach.getRole() != Role.ROLE_COACH && coach.getRole() != Role.ROLE_ADMIN) {
+            throw new AppObjectAccessDeniedException("COACH", "Only coaches and admins can create nutrition plans");
         }
 
         if (assignedUser.getRole() != Role.ROLE_USER) {
