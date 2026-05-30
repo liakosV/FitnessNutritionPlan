@@ -45,7 +45,7 @@ public class WorkoutProgramService {
      * @throws AppObjectAccessDeniedException  if the given user is not a coach
      * @throws AppObjectInvalidArgumentException if any of the assigned users is not a client
      */
-    @PreAuthorize("hasAuthority('ROLE_COACH') and principal.uuid == #coachUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or (hasAuthority('ROLE_COACH') and principal.uuid == #coachUuid)")
     @Transactional
     public WorkoutProgramReadDto createWorkoutProgram(WorkoutProgramInsertDto insertDto, String coachUuid) {
         if (workoutProgramRepository.findByName(insertDto.getName()).isPresent()) {
@@ -55,8 +55,8 @@ public class WorkoutProgramService {
         User coach = userRepository.findByUuid(coachUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("USER", "User not found"));
 
-        if (coach.getRole() != Role.ROLE_COACH) {
-            throw new AppObjectAccessDeniedException("COACH", "Only coaches can create workout programs");
+        if (coach.getRole() != Role.ROLE_COACH && coach.getRole() != Role.ROLE_ADMIN) {
+            throw new AppObjectAccessDeniedException("COACH", "Only coaches and admins can create workout programs");
         }
 
         List<User> assignedUsers = insertDto.getAssignedUserUuids() == null
@@ -128,8 +128,8 @@ public class WorkoutProgramService {
         User coach = userRepository.findByUuid(coachUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("USER", "Coach not found"));
 
-        if (coach.getRole() != Role.ROLE_COACH) {
-            throw new AppObjectInvalidArgumentException("USER", "Selected user is not a coach");
+        if (coach.getRole() != Role.ROLE_COACH && coach.getRole() != Role.ROLE_ADMIN) {
+            throw new AppObjectInvalidArgumentException("USER", "Selected user is not a coach or admin");
         }
 
         return workoutProgramRepository.findByCoachUuid(coach.getUuid())
