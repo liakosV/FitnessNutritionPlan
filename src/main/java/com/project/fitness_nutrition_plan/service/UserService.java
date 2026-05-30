@@ -147,7 +147,7 @@ public class UserService {
      * @throws AppObjectUnauthorizedException if the old password provided is incorrect
      * @throws AppObjectIllegalStateException if the new password is the same as the old password
      */
-    @PreAuthorize("principal.uuid == #uuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #uuid")
     @Transactional
     public UserReadDto changePassword(String uuid, ChangePasswordDto changePasswordDto) {
         User user = userRepository.findByUuid(uuid)
