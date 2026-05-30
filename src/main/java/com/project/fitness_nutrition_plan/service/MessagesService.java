@@ -9,6 +9,7 @@ import com.project.fitness_nutrition_plan.dto.response.ResponseMessageDto;
 import com.project.fitness_nutrition_plan.mapper.MessageMapper;
 import com.project.fitness_nutrition_plan.model.Message;
 import com.project.fitness_nutrition_plan.model.User;
+import com.project.fitness_nutrition_plan.model.static_data.Role;
 import com.project.fitness_nutrition_plan.repository.MessageRepository;
 import com.project.fitness_nutrition_plan.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -38,7 +39,7 @@ public class MessagesService {
      * @return a MessageReadDto containing the details of the sent message
      * @throws AppObjectInvalidArgumentException if the sender and receiver UUIDs are the same
      */
-    @PreAuthorize("principal.uuid == #senderUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #senderUuid")
     @Transactional
     public MessageReadDto sendMessage(MessageInsertDto insertDto, String senderUuid) {
         if (senderUuid.equals(insertDto.getReceiverUuid())) {
@@ -61,7 +62,7 @@ public class MessagesService {
      * @param currentUserUuid the unique identifier of the current user attempting to access the message
      * @return a MessageReadDto object containing the details of the retrieved message
      */
-    @PreAuthorize("principal.uuid == #currentUserUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #currentUserUuid")
     @Transactional(readOnly = true)
     public MessageReadDto getMessageByUuid(String messageUuid, String currentUserUuid) {
         Message message = getMessageByUuid(messageUuid);
@@ -77,7 +78,7 @@ public class MessagesService {
      * @param senderUuid the UUID of the user whose sent messages are to be retrieved
      * @return a list of MessageReadDto objects representing the sent messages
      */
-    @PreAuthorize("principal.uuid == #senderUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #senderUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getSentMessages(String senderUuid) {
         getUserByUuid(senderUuid);
@@ -94,7 +95,7 @@ public class MessagesService {
      * @param receiverUuid the unique identifier of the user who received the messages
      * @return a list of MessageReadDto objects representing the received messages
      */
-    @PreAuthorize("principal.uuid == #receiverUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #receiverUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getReceivedMessages(String receiverUuid) {
         getUserByUuid(receiverUuid);
@@ -115,7 +116,7 @@ public class MessagesService {
      * @return a list of MessageReadDto objects representing the messages in the conversation
      * @throws AppObjectInvalidArgumentException if the provided UUIDs refer to the same user
      */
-    @PreAuthorize("principal.uuid == #currentUserUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #currentUserUuid")
     @Transactional(readOnly = true)
     public List<MessageReadDto> getConversation(String currentUserUuid, String otherUserUuid) {
         if (currentUserUuid.equals(otherUserUuid)) {
@@ -139,7 +140,7 @@ public class MessagesService {
      * @param currentUserUuid the unique identifier of the user attempting to delete the message
      * @return a ResponseMessageDto containing the status code and confirmation message
      */
-    @PreAuthorize("principal.uuid == #currentUserUuid")
+    @PreAuthorize("hasAuthority('ROLE_ADMIN') or principal.uuid == #currentUserUuid")
     @Transactional
     public ResponseMessageDto deleteMessage(String messageUuid, String currentUserUuid) {
         Message message = getMessageByUuid(messageUuid);
@@ -183,11 +184,21 @@ public class MessagesService {
      * @throws AppObjectAccessDeniedException if the user is neither the sender nor the receiver of the message
      */
     private void validateParticipant(Message message, String currentUserUuid) {
+        if (isAdmin(currentUserUuid)) {
+            return;
+        }
+
         boolean isSender = message.getSender().getUuid().equals(currentUserUuid);
         boolean isReceiver = message.getReceiver().getUuid().equals(currentUserUuid);
 
         if (!isSender && !isReceiver) {
             throw new AppObjectAccessDeniedException("MESSAGE", "You do not have access to this message");
         }
+    }
+
+    private boolean isAdmin(String userUuid) {
+        return userRepository.findByUuid(userUuid)
+                .map(user -> user.getRole() == Role.ROLE_ADMIN)
+                .orElse(false);
     }
 }
