@@ -9,16 +9,16 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class NutritionPlanReadDto {
 
-    private Long id;
+//    private Long id;
     private String uuid;
 
     private String title;
     private String description;
     private boolean active;
 
-    private Long coachId;
+    private String coachUuid;
     private String coachUsername;
 
-    private Long assignedUserId;
+    private String assignedUserUuid;
     private String assignedUserUsername;
 }
