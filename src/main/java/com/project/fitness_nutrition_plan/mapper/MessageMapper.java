@@ -23,7 +23,7 @@ public class MessageMapper {
     public MessageReadDto mapToMessageReadDto(Message message) {
         var dto = new MessageReadDto();
 
-        dto.setId(message.getId());
+//        dto.setId(message.getId());
         dto.setUuid(message.getUuid());
         dto.setContent(message.getContent());
         dto.setTimestamp(message.getTimeStamp());
