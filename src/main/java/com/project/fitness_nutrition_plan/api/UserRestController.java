@@ -4,11 +4,13 @@ import com.project.fitness_nutrition_plan.dto.response.ResponseMessageDto;
 import com.project.fitness_nutrition_plan.dto.user.ChangePasswordDto;
 import com.project.fitness_nutrition_plan.dto.user.UserReadDto;
 import com.project.fitness_nutrition_plan.dto.user.UserUpdateDto;
+import com.project.fitness_nutrition_plan.model.User;
 import com.project.fitness_nutrition_plan.model.static_data.Role;
 import com.project.fitness_nutrition_plan.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -31,12 +33,12 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
-    @PatchMapping("/{uuid}")
+    @PatchMapping("/me")
     public ResponseEntity<UserReadDto> updateUser(
-            @PathVariable String uuid,
+            @AuthenticationPrincipal User loggedInUser,
             @Valid @RequestBody UserUpdateDto updateDto) {
 
-        UserReadDto userReadDto = userService.updateUser(updateDto, uuid);
+        UserReadDto userReadDto = userService.updateUser(updateDto, loggedInUser.getUuid());
 
         return ResponseEntity.ok(userReadDto);
     }
@@ -46,12 +48,12 @@ public class UserRestController {
         return ResponseEntity.ok(userService.deleteUser(uuid));
     }
 
-    @PatchMapping("/{uuid}/password")
+    @PatchMapping("/me/password")
     public ResponseEntity<UserReadDto> changePassword(
-            @PathVariable String uuid,
+            @AuthenticationPrincipal User loggedInUser,
             @RequestBody ChangePasswordDto dto) {
 
-        UserReadDto userReadDto = userService.changePassword(uuid, dto);
+        UserReadDto userReadDto = userService.changePassword(loggedInUser.getUuid(), dto);
 
         return ResponseEntity.ok(userReadDto);
     }
