@@ -47,7 +47,7 @@ public class NutritionPlanService {
         User coach = userRepository.findByUsername(coachUsername)
                 .orElseThrow(() -> new AppObjectNotFoundException("USER", "Coach not found"));
 
-        User assignedUser = userRepository.findById(insertDto.getAssignedUserId())
+        User assignedUser = userRepository.findByUuid(insertDto.getAssignedUserUuid())
                 .orElseThrow(() -> new AppObjectNotFoundException("USER", "Assigned user not found"));
 
         if (coach.getRole() != Role.ROLE_COACH && coach.getRole() != Role.ROLE_ADMIN) {
