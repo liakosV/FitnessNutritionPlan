@@ -11,7 +11,7 @@ import java.util.List;
 @AllArgsConstructor
 public class WorkoutProgramReadDto {
 
-    private Long id;
+//    private Long id;
     private String uuid;
 
     private String name;
