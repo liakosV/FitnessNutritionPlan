@@ -19,9 +19,9 @@ public interface NutritionPlanMapper {
      * @param nutritionPlan the NutritionPlan entity to be mapped
      * @return a NutritionPlanReadDto containing the mapped data from the given NutritionPlan
      */
-    @Mapping(target = "coachId", source = "coach.id")
+    @Mapping(target = "coachUuid", source = "coach.uuid")
     @Mapping(target = "coachUsername", source = "coach.username")
-    @Mapping(target = "assignedUserId", source = "assignedUser.id")
+    @Mapping(target = "assignedUserUuid", source = "assignedUser.uuid")
     @Mapping(target = "assignedUserUsername", source = "assignedUser.username")
     NutritionPlanReadDto mapToNutritionPlanReadDto(NutritionPlan nutritionPlan);
 
