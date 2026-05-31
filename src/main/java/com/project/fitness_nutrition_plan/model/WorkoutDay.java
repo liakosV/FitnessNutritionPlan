@@ -23,5 +23,5 @@ public class WorkoutDay extends AbstractEntity {
 
     @ManyToOne
     @JoinColumn(name = "workout_program_id")
-    private WorkoutProgram WorkoutProgram;
+    private WorkoutProgram workoutProgram;
 }
