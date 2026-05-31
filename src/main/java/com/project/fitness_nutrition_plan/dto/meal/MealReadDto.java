@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class MealReadDto {
     
-    private Long id;
+//    private Long id;
 
     private String uuid;
     
