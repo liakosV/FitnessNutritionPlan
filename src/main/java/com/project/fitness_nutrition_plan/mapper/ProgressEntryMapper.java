@@ -23,7 +23,7 @@ public class ProgressEntryMapper {
     public ProgressEntryReadDto mapToProgressEntryReadDto(ProgressEntry progressEntry) {
         var dto = new ProgressEntryReadDto();
 
-        dto.setId(progressEntry.getId());
+//        dto.setId(progressEntry.getId());
         dto.setUuid(progressEntry.getUuid());
         dto.setWeight(progressEntry.getWeight());
         dto.setBodyFat(progressEntry.getBodyFat());
