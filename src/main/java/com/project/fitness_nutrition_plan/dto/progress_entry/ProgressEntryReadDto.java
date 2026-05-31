@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @AllArgsConstructor
 public class ProgressEntryReadDto {
 
-    private Long id;
+//    private Long id;
     private String uuid;
     private Double weight;
     private Double bodyFat;
