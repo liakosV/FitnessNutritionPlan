@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class MessageReadDto {
 
-    private Long id;
+//    private Long id;
     private String uuid;
     private String content;
     private LocalDateTime timestamp;
