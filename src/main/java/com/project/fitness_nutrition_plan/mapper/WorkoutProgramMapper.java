@@ -25,7 +25,7 @@ public class WorkoutProgramMapper {
         var dto = new WorkoutProgramReadDto();
         List<User> assignedUsers = workoutProgram.getAssignedUsers();
 
-        dto.setId(workoutProgram.getId());
+//        dto.setId(workoutProgram.getId());
         dto.setUuid(workoutProgram.getUuid());
         dto.setName(workoutProgram.getName());
         dto.setDescription(workoutProgram.getDescription());
