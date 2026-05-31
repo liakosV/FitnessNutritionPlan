@@ -27,7 +27,7 @@ public class UserMapper {
     public UserReadDto mapToUserReadDto(User user) {
         var dto = new UserReadDto();
 
-        dto.setId(user.getId());
+//        dto.setId(user.getId());
         dto.setUuid(user.getUuid());
         dto.setUsername(user.getUsername());
         dto.setEmail(user.getEmail());
