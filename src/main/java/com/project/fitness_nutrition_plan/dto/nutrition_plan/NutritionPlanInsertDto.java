@@ -20,5 +20,5 @@ public class NutritionPlanInsertDto {
     private boolean active;
 
     @NotNull(message = "Assigned user id cannot be empty")
-    private Long assignedUserId;
+    private String assignedUserUuid;
 }
