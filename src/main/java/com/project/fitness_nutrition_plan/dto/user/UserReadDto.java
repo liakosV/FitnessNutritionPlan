@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class UserReadDto {
 
-    private Long id;
+//    private Long id;
     private String uuid;
     private String username;
     private String email;
