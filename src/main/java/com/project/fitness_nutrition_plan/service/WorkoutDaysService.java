@@ -77,7 +77,7 @@ public class WorkoutDaysService {
         WorkoutProgram workoutProgram = workoutProgramRepository.findByUuid(workoutProgramUuid)
                 .orElseThrow(() -> new AppObjectNotFoundException("WORKOUT_PROGRAM", "Workout program not found"));
 
-                return workoutDayRepository.findByWorkoutProgramUuid(workoutProgram.getUuid())
+        return workoutDayRepository.findByWorkoutProgram(workoutProgram)
                 .stream()
                 .map(workoutDayMapper::mapToWorkoutDayReadDto)
                 .toList();
