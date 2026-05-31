@@ -13,13 +13,13 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/workout/days")
+@RequestMapping("/api")
 @RequiredArgsConstructor
 public class WorkoutDayRestController {
 
     private final WorkoutDaysService workoutDaysService;
 
-    @PostMapping
+    @PostMapping("/workout-days")
     public ResponseEntity<WorkoutDayReadDto> createWorkoutDay(@RequestBody @Valid WorkoutDayInsertDto insertDto) {
 
         WorkoutDayReadDto workoutDayReadDto = workoutDaysService.createWorkoutDay(insertDto);
@@ -27,7 +27,7 @@ public class WorkoutDayRestController {
         return ResponseEntity.ok(workoutDayReadDto);
     }
 
-    @PatchMapping("/{uuid}")
+    @PatchMapping("/workout-days/{uuid}")
     public ResponseEntity<WorkoutDayReadDto> updateWorkoutDay(
             @RequestBody @Valid WorkoutDayUpdateDto workoutDayUpdateDto,
             @PathVariable String uuid) {
@@ -37,12 +37,12 @@ public class WorkoutDayRestController {
         return ResponseEntity.ok(workoutDayReadDto);
     }
 
-    @GetMapping("/{uuid}")
-    public ResponseEntity<List<WorkoutDayReadDto>> getWorkoutDaysByWorkoutProgram(@PathVariable String uuid) {
-        return ResponseEntity.ok(workoutDaysService.getWorkoutDaysByWorkoutProgram(uuid));
+    @GetMapping("workout/programs/{workoutProgramUuid}/workout-days")
+    public ResponseEntity<List<WorkoutDayReadDto>> getWorkoutDaysByWorkoutProgram(@PathVariable String workoutProgramUuid) {
+        return ResponseEntity.ok(workoutDaysService.getWorkoutDaysByWorkoutProgram(workoutProgramUuid));
     }
 
-    @DeleteMapping("/{uuid}")
+    @DeleteMapping("/workout-days/{uuid}")
     public ResponseEntity<ResponseMessageDto> deleteWorkoutDay(@PathVariable String uuid) {
         return ResponseEntity.ok(workoutDaysService.deleteWorkoutDay(uuid));
     }
