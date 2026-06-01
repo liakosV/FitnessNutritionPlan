@@ -3,8 +3,10 @@ package com.project.fitness_nutrition_plan.api;
 import com.project.fitness_nutrition_plan.authentication.AuthenticationService;
 import com.project.fitness_nutrition_plan.dto.authentication.AuthenticationRequestDto;
 import com.project.fitness_nutrition_plan.dto.authentication.AuthenticationResponseDto;
+import com.project.fitness_nutrition_plan.dto.refresh_token.RefreshTokenRequestDto;
 import com.project.fitness_nutrition_plan.dto.user.UserInsertDto;
 import com.project.fitness_nutrition_plan.dto.user.UserReadDto;
+import com.project.fitness_nutrition_plan.model.RefreshToken;
 import com.project.fitness_nutrition_plan.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -44,5 +46,12 @@ public class AuthRestController {
         return ResponseEntity
                 .created(location)
                 .body(userReadDto);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<AuthenticationResponseDto> refresh(@RequestBody RefreshTokenRequestDto requestDto) {
+        AuthenticationResponseDto responseDto = authenticationService.refresh(requestDto.refreshToken());
+
+        return ResponseEntity.ok(responseDto);
     }
 }
