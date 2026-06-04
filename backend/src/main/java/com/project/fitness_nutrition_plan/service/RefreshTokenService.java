@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
+import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
@@ -31,7 +32,7 @@ public class RefreshTokenService {
 
         refreshToken.setToken(generateRandomToken());
         refreshToken.setUser(user);
-        refreshToken.setExpiresAt(LocalDateTime.now().plusSeconds(refreshExpiration));
+        refreshToken.setExpiresAt(LocalDateTime.now().plus(Duration.ofMillis(refreshExpiration)));
         refreshToken.setRevoked(false);
 
         RefreshToken savedToken = refreshTokenRepository.save(refreshToken);
