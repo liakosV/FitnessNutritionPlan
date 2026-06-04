@@ -1,5 +1,37 @@
-<form>
-    <input type="username" placeholder="Username">
-    <input type="password" placeholder="Password">
-    <button type="submit">Login</button>
+<main class="login-page">
+  <form class="login-form" (ngSubmit)="onSubmit()">
+    <h1>Login</h1>
+
+    <label for="username">Username</label>
+    <input
+      id="username"
+      type="text"
+      placeholder="Username"
+      name="username"
+      [(ngModel)]="credentials.username"
+      required
+    >
+
+    <label for="password">Password</label>
+    <input
+      id="password"
+      type="password"
+      placeholder="Password"
+      name="password"
+      [(ngModel)]="credentials.password"
+      required
+    >
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (successMessage) {
+      <p class="success">{{ successMessage }}</p>
+    }
+
+    <button type="submit" [disabled]="isLoading">
+      {{ isLoading ? 'Logging in...' : 'Login' }}
+    </button>
 </form>
+</main>
