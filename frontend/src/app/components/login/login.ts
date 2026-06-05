@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Auth } from '../../services/auth';
+import { AuthService } from '../../services/auth.service';
+import { Credentials } from '../../interfaces/user';
 
 @Component({
   selector: 'app-login',
@@ -9,9 +10,9 @@ import { Auth } from '../../services/auth';
   styleUrl: './login.css',
 })
 export class Login {
-  private readonly auth: Auth = inject(Auth);
+  private readonly auth: AuthService = inject(AuthService);
 
-  credentials = {
+  credentials: Credentials = {
     username: '',
     password: '',
   };
