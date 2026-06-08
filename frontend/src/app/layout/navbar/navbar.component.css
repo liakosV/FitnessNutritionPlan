@@ -1,0 +1,75 @@
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  border-bottom: 1px solid #d7e7e1;
+  background: #ffffff;
+  color: #10251f;
+}
+
+.brand {
+  margin-left: 12px;
+  color: #10251f;
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.spacer {
+  flex: 1 1 auto;
+}
+
+.session {
+  display: grid;
+  margin-right: 14px;
+  text-align: right;
+}
+
+.session strong {
+  font-size: 0.92rem;
+  line-height: 1.1;
+}
+
+.session span {
+  color: #5c746d;
+  font-size: 0.74rem;
+  line-height: 1.2;
+}
+
+.menu-mark,
+.menu-mark::before,
+.menu-mark::after {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 2px;
+  background: #10251f;
+}
+
+.menu-mark {
+  position: relative;
+}
+
+.menu-mark::before,
+.menu-mark::after {
+  position: absolute;
+  left: 0;
+  content: '';
+}
+
+.menu-mark::before {
+  top: -6px;
+}
+
+.menu-mark::after {
+  top: 6px;
+}
+
+@media (max-width: 640px) {
+  .session {
+    display: none;
+  }
+
+  .brand {
+    font-size: 0.95rem;
+  }
+}
