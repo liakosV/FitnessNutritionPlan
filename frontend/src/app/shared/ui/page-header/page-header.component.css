@@ -1,0 +1,36 @@
+.page-header {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+.page-header p {
+  margin: 0;
+  color: #168265;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.page-header div {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+h1 {
+  margin: 0;
+  color: #10251f;
+  font-size: clamp(1.9rem, 3vw, 2.7rem);
+  line-height: 1.08;
+}
+
+.page-header span {
+  max-width: 780px;
+  color: #526b62;
+  font-size: 1rem;
+  line-height: 1.6;
+}
