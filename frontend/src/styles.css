@@ -1,1 +1,32 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@angular/material/prebuilt-themes/azure-blue.css';
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: #f5fbf8;
+  color: #14211d;
+  font-family: Roboto, Arial, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.snackbar-success {
+  --mdc-snackbar-container-color: #0f6b52;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
+
+.snackbar-error {
+  --mdc-snackbar-container-color: #9f2525;
+  --mdc-snackbar-supporting-text-color: #ffffff;
+}
