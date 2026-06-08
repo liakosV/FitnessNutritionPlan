@@ -1,0 +1,18 @@
+<mat-toolbar class="navbar">
+  <button mat-icon-button type="button" aria-label="Toggle navigation" (click)="menuClick.emit()">
+    <span class="menu-mark" aria-hidden="true"></span>
+  </button>
+
+  <a class="brand" routerLink="/dashboard">Fitness & Nutrition</a>
+
+  <span class="spacer"></span>
+
+  @if (currentUser(); as user) {
+    <div class="session">
+      <strong>{{ user.username }}</strong>
+      <span>{{ user.role }}</span>
+    </div>
+  }
+
+  <button mat-stroked-button type="button" (click)="logout()">Logout</button>
+</mat-toolbar>
