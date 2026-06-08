@@ -1,0 +1,27 @@
+<aside class="sidebar">
+  <div class="sidebar-header">
+    <span class="logo">FN</span>
+    <div>
+      <strong>FitPlan</strong>
+      @if (currentUser(); as user) {
+        <small>{{ user.role.replace('ROLE_', '') | titlecase }} workspace</small>
+      } @else {
+        <small>Workspace</small>
+      }
+    </div>
+  </div>
+
+  <mat-nav-list aria-label="Main navigation">
+    @for (item of navItems(); track item.route) {
+      <a
+        mat-list-item
+        [routerLink]="item.route"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: item.route === '/dashboard' }"
+      >
+        <span matListItemTitle>{{ item.label }}</span>
+        <span matListItemLine>{{ item.description }}</span>
+      </a>
+    }
+  </mat-nav-list>
+</aside>
