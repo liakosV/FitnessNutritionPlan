@@ -1,0 +1,13 @@
+<mat-sidenav-container class="shell">
+  <mat-sidenav #drawer class="sidenav" mode="side" opened>
+    <app-sidebar />
+  </mat-sidenav>
+
+  <mat-sidenav-content class="content">
+    <app-navbar (menuClick)="drawer.toggle()" />
+
+    <main class="page-content">
+      <router-outlet />
+    </main>
+  </mat-sidenav-content>
+</mat-sidenav-container>
