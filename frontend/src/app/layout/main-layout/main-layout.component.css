@@ -1,0 +1,31 @@
+.shell {
+  min-height: 100vh;
+  background: #f5fbf8;
+}
+
+.sidenav {
+  width: 282px;
+  border-right: 1px solid #d7e7e1;
+  background: #ffffff;
+}
+
+.content {
+  min-height: 100vh;
+}
+
+.page-content {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding: 32px 0 48px;
+}
+
+@media (max-width: 760px) {
+  .sidenav {
+    width: min(86vw, 320px);
+  }
+
+  .page-content {
+    width: min(100% - 24px, 1180px);
+    padding-top: 24px;
+  }
+}
