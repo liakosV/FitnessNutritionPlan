@@ -1,0 +1,36 @@
+.auth-page {
+  display: grid;
+  min-height: 100vh;
+  place-items: center;
+  padding: 24px;
+  background:
+    radial-gradient(circle at top left, rgba(15, 123, 95, 0.14), transparent 32rem),
+    #f5fbf8;
+}
+
+.auth-card {
+  width: min(100%, 440px);
+  border-color: #c8ddd5;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+}
+
+.status {
+  margin: 0;
+  border-radius: 8px;
+  background: #e8f6f1;
+  color: #0f5d49;
+  padding: 12px;
+  line-height: 1.5;
+}
+
+mat-card-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 0 16px 16px;
+}
