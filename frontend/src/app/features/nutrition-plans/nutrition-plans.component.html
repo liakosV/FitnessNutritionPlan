@@ -14,15 +14,15 @@
         <app-form-error [message]="formError" />
         <mat-form-field appearance="outline">
           <mat-label>Title</mat-label>
-          <input matInput formControlName="title" />
+          <input matInput formControlName="title" placeholder="Title" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Description</mat-label>
-          <textarea matInput formControlName="description" rows="4"></textarea>
+          <textarea matInput formControlName="description" rows="4" placeholder="Description"></textarea>
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Assigned user UUID</mat-label>
-          <input matInput formControlName="assignedUserUuid" />
+          <input matInput formControlName="assignedUserUuid" placeholder="Assigned user UUID" />
         </mat-form-field>
         <mat-checkbox formControlName="active">Active</mat-checkbox>
         <button mat-flat-button type="submit" [disabled]="saving">
@@ -42,7 +42,7 @@
         <app-form-error [message]="lookupError" />
         <mat-form-field appearance="outline">
           <mat-label>Nutrition plan UUID</mat-label>
-          <input matInput formControlName="uuid" />
+          <input matInput formControlName="uuid" placeholder="Nutrition plan UUID" />
         </mat-form-field>
         <button mat-flat-button type="submit">Find plan</button>
       </form>
