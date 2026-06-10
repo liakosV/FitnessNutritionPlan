@@ -1,0 +1,30 @@
+mat-card {
+  overflow: hidden;
+  border-color: #c8ddd5;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+.uuid {
+  max-width: 240px;
+  color: #526b62;
+  font-family: Consolas, monospace;
+  font-size: 0.82rem;
+  word-break: break-all;
+}
+
+mat-select {
+  width: 150px;
+}
+
+.empty {
+  margin: 0;
+  color: #526b62;
+  padding: 22px;
+}
