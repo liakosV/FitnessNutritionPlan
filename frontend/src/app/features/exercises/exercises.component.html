@@ -1,0 +1,100 @@
+<app-page-header
+  title="Exercises"
+  description="Loads and creates exercises through the nested /api/workout/days/:workoutDayUuid/exercises backend routes."
+/>
+
+<section class="grid">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Workout day lookup</mat-card-title>
+      <mat-card-subtitle>Paste a workout day UUID.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="lookupForm" (ngSubmit)="loadExercises()">
+        <app-form-error [message]="error()" />
+        <mat-form-field appearance="outline">
+          <mat-label>Workout day UUID</mat-label>
+          <input matInput formControlName="workoutDayUuid" />
+        </mat-form-field>
+        <button mat-flat-button type="submit">Load exercises</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Create exercise</mat-card-title>
+      <mat-card-subtitle>Sets, reps, and rest time must be at least 1.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="createForm" (ngSubmit)="createExercise()">
+        <app-form-error [message]="formError" />
+        <mat-form-field appearance="outline">
+          <mat-label>Name</mat-label>
+          <input matInput formControlName="name" />
+        </mat-form-field>
+        <div class="numbers">
+          <mat-form-field appearance="outline">
+            <mat-label>Sets</mat-label>
+            <input matInput type="number" min="1" formControlName="sets" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Reps</mat-label>
+            <input matInput type="number" min="1" formControlName="reps" />
+          </mat-form-field>
+          <mat-form-field appearance="outline">
+            <mat-label>Rest time</mat-label>
+            <input matInput type="number" min="1" formControlName="restTime" />
+          </mat-form-field>
+        </div>
+        <button mat-flat-button type="submit" [disabled]="saving">
+          {{ saving ? 'Creating...' : 'Create exercise' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+<mat-card appearance="outlined" class="list-card">
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <div class="table-wrap">
+    <table mat-table [dataSource]="exercises()">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Name</th>
+        <td mat-cell *matCellDef="let exercise">{{ exercise.name }}</td>
+      </ng-container>
+      <ng-container matColumnDef="sets">
+        <th mat-header-cell *matHeaderCellDef>Sets</th>
+        <td mat-cell *matCellDef="let exercise">{{ exercise.sets }}</td>
+      </ng-container>
+      <ng-container matColumnDef="reps">
+        <th mat-header-cell *matHeaderCellDef>Reps</th>
+        <td mat-cell *matCellDef="let exercise">{{ exercise.reps }}</td>
+      </ng-container>
+      <ng-container matColumnDef="restTime">
+        <th mat-header-cell *matHeaderCellDef>Rest</th>
+        <td mat-cell *matCellDef="let exercise">{{ exercise.restTime }}</td>
+      </ng-container>
+      <ng-container matColumnDef="uuid">
+        <th mat-header-cell *matHeaderCellDef>UUID</th>
+        <td mat-cell *matCellDef="let exercise" class="uuid">{{ exercise.uuid }}</td>
+      </ng-container>
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let exercise">
+          <button mat-button color="warn" type="button" (click)="deleteExercise(exercise)">Delete</button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </div>
+
+  @if (!loading() && exercises().length === 0) {
+    <p class="empty">Load a workout day to see exercises.</p>
+  }
+</mat-card>
