@@ -15,15 +15,15 @@
         <app-form-error [message]="formError" />
         <mat-form-field appearance="outline">
           <mat-label>Weight</mat-label>
-          <input matInput type="number" min="0.1" formControlName="weight" />
+          <input matInput type="number" min="0.1" formControlName="weight" placeholder="Weight" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Body fat</mat-label>
-          <input matInput type="number" min="0" formControlName="bodyFat" />
+          <input matInput type="number" min="0" formControlName="bodyFat" placeholder="Body fat" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Notes</mat-label>
-          <textarea matInput formControlName="notes" rows="4"></textarea>
+          <textarea matInput formControlName="notes" rows="4" placeholder="Notes"></textarea>
         </mat-form-field>
         <button mat-flat-button type="submit" [disabled]="saving">
           {{ saving ? 'Saving...' : 'Add entry' }}
