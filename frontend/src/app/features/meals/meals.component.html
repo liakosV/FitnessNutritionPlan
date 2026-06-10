@@ -14,7 +14,7 @@
         <app-form-error [message]="error()" />
         <mat-form-field appearance="outline">
           <mat-label>Nutrition plan UUID</mat-label>
-          <input matInput formControlName="nutritionPlanUuid" />
+          <input matInput formControlName="nutritionPlanUuid" placeholder="Nutrition plan UUID" />
         </mat-form-field>
         <button mat-flat-button type="submit">Load meals</button>
       </form>
@@ -31,24 +31,24 @@
         <app-form-error [message]="formError" />
         <mat-form-field appearance="outline">
           <mat-label>Name</mat-label>
-          <input matInput formControlName="name" />
+          <input matInput formControlName="name" placeholder="Name" />
         </mat-form-field>
         <div class="numbers">
           <mat-form-field appearance="outline">
             <mat-label>Calories</mat-label>
-            <input matInput type="number" min="0" formControlName="calories" />
+            <input matInput type="number" min="0" formControlName="calories" placeholder="Calories" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Protein</mat-label>
-            <input matInput type="number" min="0" formControlName="protein" />
+            <input matInput type="number" min="0" formControlName="protein" placeholder="Protein" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Carbs</mat-label>
-            <input matInput type="number" min="0" formControlName="carbs" />
+            <input matInput type="number" min="0" formControlName="carbs" placeholder="Carbs" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Fat</mat-label>
-            <input matInput type="number" min="0" formControlName="fat" />
+            <input matInput type="number" min="0" formControlName="fat" placeholder="Fat" />
           </mat-form-field>
         </div>
         <button mat-flat-button type="submit" [disabled]="saving">
