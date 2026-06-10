@@ -1,0 +1,44 @@
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+  margin-bottom: 18px;
+}
+
+mat-card {
+  border-color: #c8ddd5;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+}
+
+.list-card {
+  overflow: hidden;
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table {
+  width: 100%;
+}
+
+td strong,
+td span {
+  display: block;
+}
+
+td span {
+  max-width: 320px;
+  color: #526b62;
+}
+
+.empty {
+  margin: 0;
+  color: #526b62;
+  padding: 22px;
+}
