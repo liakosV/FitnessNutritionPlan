@@ -14,11 +14,11 @@
         <app-form-error [message]="sendError" />
         <mat-form-field appearance="outline">
           <mat-label>Receiver UUID</mat-label>
-          <input matInput formControlName="receiverUuid" />
+          <input matInput formControlName="receiverUuid" placeholder="Receiver UUID" />
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Content</mat-label>
-          <textarea matInput formControlName="content" rows="5"></textarea>
+          <textarea matInput formControlName="content" rows="5" placeholder="Message content"></textarea>
         </mat-form-field>
         <button mat-flat-button type="submit" [disabled]="sending">
           {{ sending ? 'Sending...' : 'Send message' }}
@@ -37,7 +37,7 @@
         <app-form-error [message]="conversationError" />
         <mat-form-field appearance="outline">
           <mat-label>Other user UUID</mat-label>
-          <input matInput formControlName="otherUserUuid" />
+          <input matInput formControlName="otherUserUuid" placeholder="Other user UUID" />
         </mat-form-field>
         <button mat-flat-button type="submit">Load conversation</button>
       </form>
