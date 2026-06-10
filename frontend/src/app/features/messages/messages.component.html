@@ -1,0 +1,81 @@
+<app-page-header
+  title="Messages"
+  description="Uses the authenticated user's sent, received, and conversation endpoints."
+/>
+
+<section class="grid">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Send message</mat-card-title>
+      <mat-card-subtitle>Receiver UUID is required by MessageInsertDto.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="sendForm" (ngSubmit)="sendMessage()">
+        <app-form-error [message]="sendError" />
+        <mat-form-field appearance="outline">
+          <mat-label>Receiver UUID</mat-label>
+          <input matInput formControlName="receiverUuid" />
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Content</mat-label>
+          <textarea matInput formControlName="content" rows="5"></textarea>
+        </mat-form-field>
+        <button mat-flat-button type="submit" [disabled]="sending">
+          {{ sending ? 'Sending...' : 'Send message' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Conversation lookup</mat-card-title>
+      <mat-card-subtitle>Loads /api/messages/conversation/:otherUserUuid.</mat-card-subtitle>
+    </mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="conversationForm" (ngSubmit)="loadConversation()">
+        <app-form-error [message]="conversationError" />
+        <mat-form-field appearance="outline">
+          <mat-label>Other user UUID</mat-label>
+          <input matInput formControlName="otherUserUuid" />
+        </mat-form-field>
+        <button mat-flat-button type="submit">Load conversation</button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>
+
+<mat-card appearance="outlined" class="messages-card">
+  @if (loading()) {
+    <mat-progress-bar mode="indeterminate" />
+  }
+
+  <mat-tab-group>
+    <mat-tab label="Received">
+      <ng-container *ngTemplateOutlet="messageList; context: { messages: received() }" />
+    </mat-tab>
+    <mat-tab label="Sent">
+      <ng-container *ngTemplateOutlet="messageList; context: { messages: sent() }" />
+    </mat-tab>
+    <mat-tab label="Conversation">
+      <ng-container *ngTemplateOutlet="messageList; context: { messages: conversation() }" />
+    </mat-tab>
+  </mat-tab-group>
+</mat-card>
+
+<ng-template #messageList let-messages="messages">
+  <div class="message-list">
+    @for (message of messages; track message.uuid) {
+      <article>
+        <div>
+          <strong>{{ message.senderUsername }}</strong>
+          <span>to {{ message.receiverUsername }} Β· {{ message.timestamp }}</span>
+        </div>
+        <p>{{ message.content }}</p>
+        <button mat-button color="warn" type="button" (click)="deleteMessage(message)">Delete</button>
+      </article>
+    } @empty {
+      <p class="empty">No messages in this view.</p>
+    }
+  </div>
+</ng-template>
