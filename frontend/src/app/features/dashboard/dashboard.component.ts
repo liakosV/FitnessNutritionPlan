@@ -22,65 +22,8 @@ interface DashboardCard {
 @Component({
   selector: 'app-dashboard',
   imports: [MatCardModule, MatProgressBarModule, PageHeaderComponent, RouterLink],
-  template: `
-    <app-page-header
-      title="Dashboard"
-      description="A backend-aware overview of what your current role can access."
-    />
-
-    @if (loading()) {
-      <mat-progress-bar mode="indeterminate" />
-    }
-
-    <section class="cards">
-      @for (card of cards(); track card.label) {
-        <a [routerLink]="card.route">
-          <mat-card appearance="outlined">
-            <mat-card-header>
-              <mat-card-title>{{ card.value }}</mat-card-title>
-              <mat-card-subtitle>{{ card.label }}</mat-card-subtitle>
-            </mat-card-header>
-            <mat-card-content>{{ card.helper }}</mat-card-content>
-          </mat-card>
-        </a>
-      }
-    </section>
-  `,
-  styles: `
-    .cards {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-      gap: 16px;
-      margin-top: 20px;
-    }
-
-    a {
-      display: block;
-    }
-
-    mat-card {
-      height: 100%;
-      border-color: #c8ddd5;
-      transition:
-        border-color 160ms ease,
-        transform 160ms ease;
-    }
-
-    mat-card:hover {
-      border-color: #168265;
-      transform: translateY(-2px);
-    }
-
-    mat-card-title {
-      color: #10251f;
-      font-size: 2rem;
-    }
-
-    mat-card-content {
-      color: #526b62;
-      line-height: 1.5;
-    }
-  `,
+  templateUrl: './dashboard.component.html',
+  styleUrl: './dashboard.component.css',
 })
 export class DashboardComponent implements OnInit {
   private readonly auth = inject(AuthService);

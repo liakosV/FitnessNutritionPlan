@@ -1,0 +1,33 @@
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  margin-top: 20px;
+}
+
+a {
+  display: block;
+}
+
+mat-card {
+  height: 100%;
+  border-color: #c8ddd5;
+  transition:
+    border-color 160ms ease,
+    transform 160ms ease;
+}
+
+mat-card:hover {
+  border-color: #168265;
+  transform: translateY(-2px);
+}
+
+mat-card-title {
+  color: #10251f;
+  font-size: 2rem;
+}
+
+mat-card-content {
+  color: #526b62;
+  line-height: 1.5;
+}
