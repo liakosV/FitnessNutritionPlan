@@ -14,7 +14,7 @@
         <app-form-error [message]="error()" />
         <mat-form-field appearance="outline">
           <mat-label>Workout day UUID</mat-label>
-          <input matInput formControlName="workoutDayUuid" />
+          <input matInput formControlName="workoutDayUuid" placeholder="Workout day UUID" />
         </mat-form-field>
         <button mat-flat-button type="submit">Load exercises</button>
       </form>
@@ -31,20 +31,20 @@
         <app-form-error [message]="formError" />
         <mat-form-field appearance="outline">
           <mat-label>Name</mat-label>
-          <input matInput formControlName="name" />
+          <input matInput formControlName="name" placeholder="Exercise name" />
         </mat-form-field>
         <div class="numbers">
           <mat-form-field appearance="outline">
             <mat-label>Sets</mat-label>
-            <input matInput type="number" min="1" formControlName="sets" />
+            <input matInput type="number" min="1" formControlName="sets" placeholder="Sets" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Reps</mat-label>
-            <input matInput type="number" min="1" formControlName="reps" />
+            <input matInput type="number" min="1" formControlName="reps" placeholder="Reps" />
           </mat-form-field>
           <mat-form-field appearance="outline">
             <mat-label>Rest time</mat-label>
-            <input matInput type="number" min="1" formControlName="restTime" />
+            <input matInput type="number" min="1" formControlName="restTime" placeholder="Rest time" />
           </mat-form-field>
         </div>
         <button mat-flat-button type="submit" [disabled]="saving">
