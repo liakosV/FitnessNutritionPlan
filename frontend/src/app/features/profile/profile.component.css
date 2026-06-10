@@ -1,0 +1,15 @@
+.profile-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 18px;
+}
+
+mat-card {
+  border-color: #c8ddd5;
+}
+
+form {
+  display: grid;
+  gap: 16px;
+  padding-top: 18px;
+}

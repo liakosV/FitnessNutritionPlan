@@ -1,0 +1,65 @@
+<app-page-header
+  title="Profile"
+  description="Update the authenticated user's profile and password through the Spring Boot /api/users/me endpoints."
+/>
+
+<section class="profile-grid">
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Account</mat-card-title>
+      <mat-card-subtitle>
+        Signed in as {{ currentUser()?.username }} Β· {{ currentUser()?.role }}
+      </mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="profileForm" (ngSubmit)="updateProfile()">
+        <app-form-error [message]="profileError" />
+
+        <mat-form-field appearance="outline">
+          <mat-label>New username</mat-label>
+          <input matInput formControlName="username" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>New email</mat-label>
+          <input matInput type="email" formControlName="email" />
+          @if (profileForm.controls.email.invalid && profileForm.controls.email.touched) {
+            <mat-error>Enter a valid email.</mat-error>
+          }
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="profileLoading">
+          {{ profileLoading ? 'Saving...' : 'Update profile' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>Password</mat-card-title>
+      <mat-card-subtitle>Matches the backend ChangePasswordDto.</mat-card-subtitle>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+        <app-form-error [message]="passwordError" />
+
+        <mat-form-field appearance="outline">
+          <mat-label>Old password</mat-label>
+          <input matInput type="password" formControlName="oldPassword" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>New password</mat-label>
+          <input matInput type="password" formControlName="newPassword" />
+        </mat-form-field>
+
+        <button mat-flat-button type="submit" [disabled]="passwordLoading">
+          {{ passwordLoading ? 'Saving...' : 'Change password' }}
+        </button>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</section>
