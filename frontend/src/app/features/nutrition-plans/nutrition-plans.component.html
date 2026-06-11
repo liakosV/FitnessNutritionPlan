@@ -1,6 +1,6 @@
 <app-page-header
   title="Nutrition Plans"
-  description="Creates plans through /api/nutrition-plans; admins can list all, other roles can use UUID lookup."
+  description="Create and browse nutrition plans with user and plan search controls."
 />
 
 <section class="grid">
@@ -20,10 +20,38 @@
           <mat-label>Description</mat-label>
           <textarea matInput formControlName="description" rows="4" placeholder="Description"></textarea>
         </mat-form-field>
+
         <mat-form-field appearance="outline">
-          <mat-label>Assigned user UUID</mat-label>
-          <input matInput formControlName="assignedUserUuid" placeholder="Assigned user UUID" />
+          <mat-label>Assigned user</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="usersAuto"
+            [formControl]="assignedUserSearch"
+            placeholder="Search user by username"
+          />
+
+          <mat-autocomplete #usersAuto="matAutocomplete" (optionSelected)="selectAssignedUser($event.option.value)">
+            @for (user of filteredUsers(); track user.uuid) {
+              <mat-option [value]="user.uuid">
+                {{ user.username }} - {{ user.email }}
+                <small>{{ user.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No client users found</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (
+            createForm.controls.assignedUserUuid.hasError('required') &&
+            createForm.controls.assignedUserUuid.touched
+          ) {
+            <mat-error>Select an assigned user.</mat-error>
+          }
+          @if (selectedAssignedUser()) {
+            <mat-hint>Selected UUID: {{ selectedAssignedUser()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
+
         <mat-checkbox formControlName="active">Active</mat-checkbox>
         <button mat-flat-button type="submit" [disabled]="saving">
           {{ saving ? 'Creating...' : 'Create plan' }}
@@ -35,14 +63,37 @@
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Plan lookup</mat-card-title>
-      <mat-card-subtitle>Works for admins, owning coaches, and assigned clients.</mat-card-subtitle>
+      <mat-card-subtitle>Search plans you are allowed to access.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="lookupForm" (ngSubmit)="lookupPlan()">
         <app-form-error [message]="lookupError" />
         <mat-form-field appearance="outline">
-          <mat-label>Nutrition plan UUID</mat-label>
-          <input matInput formControlName="uuid" placeholder="Nutrition plan UUID" />
+          <mat-label>Nutrition plan</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="plansAuto"
+            [formControl]="lookupPlanSearch"
+            placeholder="Search nutrition plan"
+          />
+
+          <mat-autocomplete #plansAuto="matAutocomplete" (optionSelected)="selectLookupPlan($event.option.value)">
+            @for (plan of filteredLookupPlans(); track plan.uuid) {
+              <mat-option [value]="plan.uuid">
+                {{ plan.title }} - {{ plan.assignedUserUsername }}
+                <small>{{ plan.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching nutrition plans</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (lookupForm.controls.uuid.hasError('required') && lookupForm.controls.uuid.touched) {
+            <mat-error>Select a nutrition plan.</mat-error>
+          }
+          @if (selectedLookupPlan()) {
+            <mat-hint>Selected UUID: {{ selectedLookupPlan()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <button mat-flat-button type="submit">Find plan</button>
       </form>
