@@ -116,6 +116,23 @@ public class WorkoutProgramService {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated() and principal.uuid == #userUuid")
+    @Transactional(readOnly = true)
+    public List<WorkoutProgramReadDto> getAccessibleWorkoutPrograms(String userUuid) {
+        User user = userRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new AppObjectNotFoundException("USER", "User not found"));
+
+        List<WorkoutProgram> programs = switch (user.getRole()) {
+            case ROLE_ADMIN -> workoutProgramRepository.findAll();
+            case ROLE_COACH -> workoutProgramRepository.findByCoachUuid(user.getUuid());
+            case ROLE_USER -> workoutProgramRepository.findByAssignedUsersUuid(user.getUuid());
+        };
+
+        return programs.stream()
+                .map(workoutProgramMapper::mapToWorkoutProgramReadDto)
+                .toList();
+    }
+
     /**
      * Retrieves a list of workout programs associated with a specific coach.
      *
