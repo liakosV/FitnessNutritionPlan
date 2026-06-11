@@ -14,5 +14,7 @@ public interface WorkoutProgramRepository extends JpaRepository<WorkoutProgram, 
 
     List<WorkoutProgram> findByCoachUuid(String coachUuid);
 
+    List<WorkoutProgram> findByAssignedUsersUuid(String userUuid);
+
     boolean existsByName(String name);
 }
