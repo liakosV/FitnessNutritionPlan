@@ -33,6 +33,11 @@ public class UserRestController {
         return ResponseEntity.ok(userService.getAllUsers());
     }
 
+    @GetMapping("/message-recipients")
+    public ResponseEntity<List<UserReadDto>> getMessageRecipients(@AuthenticationPrincipal User loggedInUser) {
+        return ResponseEntity.ok(userService.getMessageRecipients(loggedInUser.getUuid()));
+    }
+
     @PatchMapping("/me")
     public ResponseEntity<UserReadDto> updateUser(
             @AuthenticationPrincipal User loggedInUser,
