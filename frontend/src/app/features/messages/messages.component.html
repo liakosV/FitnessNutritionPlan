@@ -7,14 +7,37 @@
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Send message</mat-card-title>
-      <mat-card-subtitle>Receiver UUID is required by MessageInsertDto.</mat-card-subtitle>
+      <mat-card-subtitle>Search for the user you want to message.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="sendForm" (ngSubmit)="sendMessage()">
         <app-form-error [message]="sendError" />
         <mat-form-field appearance="outline">
-          <mat-label>Receiver UUID</mat-label>
-          <input matInput formControlName="receiverUuid" placeholder="Receiver UUID" />
+          <mat-label>Receiver</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="receiversAuto"
+            [formControl]="receiverSearch"
+            placeholder="Search user"
+          />
+
+          <mat-autocomplete #receiversAuto="matAutocomplete" (optionSelected)="selectReceiver($event.option.value)">
+            @for (user of filteredReceivers(); track user.uuid) {
+              <mat-option [value]="user.uuid">
+                {{ user.username }} - {{ user.email }}
+                <small>{{ user.role.replace('ROLE_', '') }} | {{ user.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching users</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (sendForm.controls.receiverUuid.hasError('required') && sendForm.controls.receiverUuid.touched) {
+            <mat-error>Select a receiver.</mat-error>
+          }
+          @if (selectedReceiver()) {
+            <mat-hint>Selected UUID: {{ selectedReceiver()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <mat-form-field appearance="outline">
           <mat-label>Content</mat-label>
@@ -30,14 +53,43 @@
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Conversation lookup</mat-card-title>
-      <mat-card-subtitle>Loads /api/messages/conversation/:otherUserUuid.</mat-card-subtitle>
+      <mat-card-subtitle>Search for a user to load your conversation.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="conversationForm" (ngSubmit)="loadConversation()">
         <app-form-error [message]="conversationError" />
         <mat-form-field appearance="outline">
-          <mat-label>Other user UUID</mat-label>
-          <input matInput formControlName="otherUserUuid" placeholder="Other user UUID" />
+          <mat-label>Other user</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="conversationUsersAuto"
+            [formControl]="conversationUserSearch"
+            placeholder="Search user"
+          />
+
+          <mat-autocomplete
+            #conversationUsersAuto="matAutocomplete"
+            (optionSelected)="selectConversationUser($event.option.value)"
+          >
+            @for (user of filteredConversationUsers(); track user.uuid) {
+              <mat-option [value]="user.uuid">
+                {{ user.username }} - {{ user.email }}
+                <small>{{ user.role.replace('ROLE_', '') }} | {{ user.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching users</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (
+            conversationForm.controls.otherUserUuid.hasError('required') &&
+            conversationForm.controls.otherUserUuid.touched
+          ) {
+            <mat-error>Select a user.</mat-error>
+          }
+          @if (selectedConversationUser()) {
+            <mat-hint>Selected UUID: {{ selectedConversationUser()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <button mat-flat-button type="submit">Load conversation</button>
       </form>
