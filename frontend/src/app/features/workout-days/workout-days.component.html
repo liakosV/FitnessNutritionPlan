@@ -1,21 +1,47 @@
 <app-page-header
   title="Workout Days"
-  description="Loads /api/workout/programs/:workoutProgramUuid/workout-days and creates days through /api/workout-days."
+  description="Load and create workout days by selecting a workout program."
 />
 
 <section class="grid">
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Program lookup</mat-card-title>
-      <mat-card-subtitle>Paste a workout program UUID.</mat-card-subtitle>
+      <mat-card-subtitle>Search a workout program by name.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
       <form [formGroup]="lookupForm" (ngSubmit)="loadDays()">
         <app-form-error [message]="error()" />
         <mat-form-field appearance="outline">
-          <mat-label>Workout program UUID</mat-label>
-          <input matInput formControlName="workoutProgramUuid" placeholder="Enter workout program UUID" />
+          <mat-label>Workout program</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="programsAuto"
+            [formControl]="workoutProgramSearch"
+            placeholder="Search workout program"
+          />
+
+          <mat-autocomplete #programsAuto="matAutocomplete" (optionSelected)="selectWorkoutProgram($event.option.value)">
+            @for (program of filteredPrograms(); track program.uuid) {
+              <mat-option [value]="program.uuid">
+                {{ program.name }} - Coach: {{ program.coachUsername }}
+                <small>{{ program.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching workout programs</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (
+            lookupForm.controls.workoutProgramUuid.hasError('required') &&
+            lookupForm.controls.workoutProgramUuid.touched
+          ) {
+            <mat-error>Select a workout program.</mat-error>
+          }
+          @if (selectedWorkoutProgram()) {
+            <mat-hint>Selected UUID: {{ selectedWorkoutProgram()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <button mat-flat-button type="submit">Load days</button>
       </form>
@@ -25,7 +51,7 @@
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Create day</mat-card-title>
-      <mat-card-subtitle>Uses the same workout program UUID.</mat-card-subtitle>
+      <mat-card-subtitle>Uses the selected workout program.</mat-card-subtitle>
     </mat-card-header>
 
     <mat-card-content>
@@ -68,7 +94,11 @@
       <ng-container matColumnDef="actions">
         <th mat-header-cell *matHeaderCellDef></th>
         <td mat-cell *matCellDef="let day">
-          <a mat-button [routerLink]="['/exercises']" [queryParams]="{ workoutDayUuid: day.uuid }">
+          <a
+            mat-button
+            [routerLink]="['/exercises']"
+            [queryParams]="{ programUuid: day.workoutProgramUuid, workoutDayUuid: day.uuid }"
+          >
             Exercises
           </a>
           <button mat-button color="warn" type="button" (click)="deleteDay(day)">Delete</button>
