@@ -25,9 +25,39 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline">
-          <mat-label>Assigned user UUIDs</mat-label>
-          <input matInput formControlName="assignedUserUuids" placeholder="uuid-1, uuid-2" />
+          <mat-label>Assigned users</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="assignedUsersAuto"
+            [formControl]="assignedUserSearch"
+            placeholder="Search client by username"
+          />
+
+          <mat-autocomplete
+            #assignedUsersAuto="matAutocomplete"
+            (optionSelected)="selectAssignedUser($event.option.value)"
+          >
+            @for (user of filteredAssignedUsers(); track user.uuid) {
+              <mat-option [value]="user.uuid">
+                {{ user.username }} - {{ user.email }}
+                <small>{{ user.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching client users</mat-option>
+            }
+          </mat-autocomplete>
         </mat-form-field>
+
+        @if (selectedAssignedUsers().length > 0) {
+          <div class="selection-list" aria-label="Selected assigned users">
+            @for (user of selectedAssignedUsers(); track user.uuid) {
+              <div>
+                <span>{{ userLabel(user) }}</span>
+                <button mat-button type="button" (click)="removeAssignedUser(user.uuid)">Remove</button>
+              </div>
+            }
+          </div>
+        }
 
         <button mat-flat-button type="submit" [disabled]="saving">
           {{ saving ? 'Creating...' : 'Create program' }}
