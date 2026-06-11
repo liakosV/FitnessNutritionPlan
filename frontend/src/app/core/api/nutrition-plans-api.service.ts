@@ -33,6 +33,10 @@ export class NutritionPlansApiService {
     return this.http.get<NutritionPlanReadDto[]>(this.baseUrl);
   }
 
+  getAccessible(): Observable<NutritionPlanReadDto[]> {
+    return this.http.get<NutritionPlanReadDto[]>(`${this.baseUrl}/accessible`);
+  }
+
   delete(uuid: string): Observable<ResponseMessageDto> {
     return this.http.delete<ResponseMessageDto>(`${this.baseUrl}/${uuid}`);
   }
