@@ -38,7 +38,6 @@ export class DashboardComponent implements OnInit {
   ngOnInit(): void {
     const user = this.auth.currentUser();
     const canSeeUsers = user?.role === 'ROLE_ADMIN' || user?.role === 'ROLE_COACH';
-    const canSeeAllPlans = user?.role === 'ROLE_ADMIN';
     const canSeePrograms = user?.role === 'ROLE_ADMIN' || user?.role === 'ROLE_COACH';
 
     this.loading.set(true);
@@ -46,15 +45,8 @@ export class DashboardComponent implements OnInit {
       users: canSeeUsers
         ? this.usersApi.getAll().pipe(catchError(() => of([])))
         : of([]),
-      workoutPrograms: canSeePrograms
-        ? (user?.role === 'ROLE_ADMIN'
-            ? this.workoutProgramsApi.getAll()
-            : this.workoutProgramsApi.getMine()
-          ).pipe(catchError(() => of([])))
-        : of([]),
-      nutritionPlans: canSeeAllPlans
-        ? this.nutritionPlansApi.getAll().pipe(catchError(() => of([])))
-        : of([]),
+      workoutPrograms: this.workoutProgramsApi.getAccessible().pipe(catchError(() => of([]))),
+      nutritionPlans: this.nutritionPlansApi.getAccessible().pipe(catchError(() => of([]))),
       progressEntries: this.progressEntriesApi.getMine().pipe(catchError(() => of([]))),
     }).subscribe({
       next: ({ users, workoutPrograms, nutritionPlans, progressEntries }) => {
@@ -67,18 +59,16 @@ export class DashboardComponent implements OnInit {
           },
           {
             label: 'Workout Programs',
-            value: canSeePrograms ? String(workoutPrograms.length) : 'Lookup',
+            value: String(workoutPrograms.length),
             helper: canSeePrograms
               ? 'Programs returned by the backend for your role.'
-              : 'Clients need a known program UUID to open days.',
+              : 'Programs assigned to your account.',
             route: canSeePrograms ? '/workout-programs' : '/workout-days',
           },
           {
             label: 'Nutrition Plans',
-            value: canSeeAllPlans ? String(nutritionPlans.length) : 'UUID lookup',
-            helper: canSeeAllPlans
-              ? 'All nutrition plans in the system.'
-              : 'The backend exposes plan lookup by UUID for non-admin access.',
+            value: String(nutritionPlans.length),
+            helper: 'Nutrition plans you can access.',
             route: '/nutrition-plans',
           },
           {
