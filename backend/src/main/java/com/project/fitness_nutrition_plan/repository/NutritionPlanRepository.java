@@ -11,6 +11,8 @@ public interface NutritionPlanRepository extends JpaRepository<NutritionPlan, Lo
 
     List<NutritionPlan> findByCoachId(Long coachId);
 
+    List<NutritionPlan> findByAssignedUserUuid(String assignedUserUuid);
+
     Optional<NutritionPlan> findByAssignedUserId(Long assignedUserId);
 
     boolean existsByAssignedUserId(Long userId);
