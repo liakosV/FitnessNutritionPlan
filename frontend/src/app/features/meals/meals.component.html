@@ -1,20 +1,49 @@
 <app-page-header
   title="Meals"
-  description="Admin can list all meals; all allowed roles can load meals by nutrition plan UUID."
+  description="Admin can list all meals; all allowed roles can load meals by selecting a nutrition plan."
 />
 
 <section class="grid">
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Nutrition plan lookup</mat-card-title>
-      <mat-card-subtitle>Uses /api/nutrition-plans/:nutritionPlanUuid/meals.</mat-card-subtitle>
+      <mat-card-subtitle>Search a nutrition plan you can access.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="lookupForm" (ngSubmit)="loadMealsByPlan()">
         <app-form-error [message]="error()" />
         <mat-form-field appearance="outline">
-          <mat-label>Nutrition plan UUID</mat-label>
-          <input matInput formControlName="nutritionPlanUuid" placeholder="Nutrition plan UUID" />
+          <mat-label>Nutrition plan</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="nutritionPlansAuto"
+            [formControl]="nutritionPlanSearch"
+            placeholder="Search nutrition plan"
+          />
+
+          <mat-autocomplete
+            #nutritionPlansAuto="matAutocomplete"
+            (optionSelected)="selectNutritionPlan($event.option.value)"
+          >
+            @for (plan of filteredNutritionPlans(); track plan.uuid) {
+              <mat-option [value]="plan.uuid">
+                {{ plan.title }} - {{ plan.assignedUserUsername }}
+                <small>{{ plan.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching nutrition plans</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (
+            lookupForm.controls.nutritionPlanUuid.hasError('required') &&
+            lookupForm.controls.nutritionPlanUuid.touched
+          ) {
+            <mat-error>Select a nutrition plan.</mat-error>
+          }
+          @if (selectedNutritionPlan()) {
+            <mat-hint>Selected UUID: {{ selectedNutritionPlan()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <button mat-flat-button type="submit">Load meals</button>
       </form>
