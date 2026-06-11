@@ -51,6 +51,12 @@ public class WorkoutProgramRestController {
         return ResponseEntity.ok(workoutProgramService.getAllWorkoutPrograms());
     }
 
+    @GetMapping("/accessible")
+    public ResponseEntity<List<WorkoutProgramReadDto>> getAccessiblePrograms(
+            @AuthenticationPrincipal User loggedInUser) {
+        return ResponseEntity.ok(workoutProgramService.getAccessibleWorkoutPrograms(loggedInUser.getUuid()));
+    }
+
     @GetMapping("/coach/{coachUuid}")
     public ResponseEntity<List<WorkoutProgramReadDto>> getProgramsByCoach(@PathVariable String coachUuid) {
         return ResponseEntity.ok(workoutProgramService.getWorkoutProgramsByCoach(coachUuid));
