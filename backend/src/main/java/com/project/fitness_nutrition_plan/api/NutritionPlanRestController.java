@@ -51,6 +51,12 @@ public class NutritionPlanRestController {
         return ResponseEntity.ok(nutritionPlanService.getAllNutritionPlans());
     }
 
+    @GetMapping("/accessible")
+    public ResponseEntity<List<NutritionPlanReadDto>> getAccessibleNutritionPlans(
+            @AuthenticationPrincipal User loggedInUser) {
+        return ResponseEntity.ok(nutritionPlanService.getAccessibleNutritionPlans(loggedInUser.getUuid()));
+    }
+
     @DeleteMapping("/{uuid}")
     public ResponseEntity<ResponseMessageDto> deleteNutritionPlan(@PathVariable String uuid) {
         return ResponseEntity.ok(nutritionPlanService.deleteNutritionPlan(uuid));
