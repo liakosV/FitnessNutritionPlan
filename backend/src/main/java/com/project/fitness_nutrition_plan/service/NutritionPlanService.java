@@ -108,6 +108,23 @@ public class NutritionPlanService {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated() and principal.uuid == #userUuid")
+    @Transactional(readOnly = true)
+    public List<NutritionPlanReadDto> getAccessibleNutritionPlans(String userUuid) {
+        User user = userRepository.findByUuid(userUuid)
+                .orElseThrow(() -> new AppObjectNotFoundException("USER", "User not found"));
+
+        List<NutritionPlan> nutritionPlans = switch (user.getRole()) {
+            case ROLE_ADMIN -> nutritionPlanRepository.findAll();
+            case ROLE_COACH -> nutritionPlanRepository.findByCoachId(user.getId());
+            case ROLE_USER -> nutritionPlanRepository.findByAssignedUserUuid(user.getUuid());
+        };
+
+        return nutritionPlans.stream()
+                .map(nutritionPlanMapper::mapToNutritionPlanReadDto)
+                .toList();
+    }
+
     /**
      * Deletes a nutrition plan identified by its UUID.
      *
