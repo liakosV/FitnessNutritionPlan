@@ -118,6 +118,14 @@ public class UserService {
                 .toList();
     }
 
+    @PreAuthorize("isAuthenticated() and principal.uuid == #currentUserUuid")
+    @Transactional(readOnly = true)
+    public List<UserReadDto> getMessageRecipients(String currentUserUuid) {
+        return userRepository.findByUuidNotOrderByUsernameAsc(currentUserUuid).stream()
+                .map(userMapper::mapToUserReadDto)
+                .toList();
+    }
+
     /**
      * Deletes a user by their unique identifier (UUID).
      *
