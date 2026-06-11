@@ -22,6 +22,10 @@ export class UsersApiService {
     return this.http.get<UserReadDto[]>(this.baseUrl);
   }
 
+  getMessageRecipients(): Observable<UserReadDto[]> {
+    return this.http.get<UserReadDto[]>(`${this.baseUrl}/message-recipients`);
+  }
+
   getByUuid(uuid: string): Observable<UserReadDto> {
     return this.http.get<UserReadDto>(`${this.baseUrl}/${uuid}`);
   }
