@@ -1,20 +1,67 @@
 <app-page-header
   title="Exercises"
-  description="Loads and creates exercises through the nested /api/workout/days/:workoutDayUuid/exercises backend routes."
+  description="Load and create exercises by selecting a workout program and day."
 />
 
 <section class="grid">
   <mat-card appearance="outlined">
     <mat-card-header>
       <mat-card-title>Workout day lookup</mat-card-title>
-      <mat-card-subtitle>Paste a workout day UUID.</mat-card-subtitle>
+      <mat-card-subtitle>Select a workout program, then choose one of its days.</mat-card-subtitle>
     </mat-card-header>
     <mat-card-content>
       <form [formGroup]="lookupForm" (ngSubmit)="loadExercises()">
         <app-form-error [message]="error()" />
         <mat-form-field appearance="outline">
-          <mat-label>Workout day UUID</mat-label>
-          <input matInput formControlName="workoutDayUuid" placeholder="Workout day UUID" />
+          <mat-label>Workout program</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="programsAuto"
+            [formControl]="workoutProgramSearch"
+            placeholder="Search workout program"
+          />
+
+          <mat-autocomplete #programsAuto="matAutocomplete" (optionSelected)="selectWorkoutProgram($event.option.value)">
+            @for (program of filteredPrograms(); track program.uuid) {
+              <mat-option [value]="program.uuid">
+                {{ program.name }} - Coach: {{ program.coachUsername }}
+                <small>{{ program.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>No matching workout programs</mat-option>
+            }
+          </mat-autocomplete>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Workout day</mat-label>
+          <input
+            matInput
+            [matAutocomplete]="daysAuto"
+            [formControl]="workoutDaySearch"
+            placeholder="Search workout day"
+          />
+
+          <mat-autocomplete #daysAuto="matAutocomplete" (optionSelected)="selectWorkoutDay($event.option.value)">
+            @for (day of filteredWorkoutDays(); track day.uuid) {
+              <mat-option [value]="day.uuid">
+                {{ day.dayName }} - {{ day.workoutProgramName }}
+                <small>{{ day.uuid }}</small>
+              </mat-option>
+            } @empty {
+              <mat-option disabled>Choose a program to see workout days</mat-option>
+            }
+          </mat-autocomplete>
+
+          @if (
+            lookupForm.controls.workoutDayUuid.hasError('required') &&
+            lookupForm.controls.workoutDayUuid.touched
+          ) {
+            <mat-error>Select a workout day.</mat-error>
+          }
+          @if (selectedWorkoutDay()) {
+            <mat-hint>Selected UUID: {{ selectedWorkoutDay()?.uuid }}</mat-hint>
+          }
         </mat-form-field>
         <button mat-flat-button type="submit">Load exercises</button>
       </form>
