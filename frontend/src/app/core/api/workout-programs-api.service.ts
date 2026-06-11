@@ -33,6 +33,10 @@ export class WorkoutProgramsApiService {
     return this.http.get<WorkoutProgramReadDto[]>(this.baseUrl);
   }
 
+  getAccessible(): Observable<WorkoutProgramReadDto[]> {
+    return this.http.get<WorkoutProgramReadDto[]>(`${this.baseUrl}/accessible`);
+  }
+
   getByCoach(coachUuid: string): Observable<WorkoutProgramReadDto[]> {
     return this.http.get<WorkoutProgramReadDto[]>(`${this.baseUrl}/coach/${coachUuid}`);
   }
