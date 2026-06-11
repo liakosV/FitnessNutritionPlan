@@ -1,7 +1,9 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, computed, inject, OnInit, signal } from '@angular/core';
 import { FormControl, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatCardModule } from '@angular/material/card';
+import { MatOptionModule } from '@angular/material/core';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
@@ -10,8 +12,9 @@ import { ActivatedRoute } from '@angular/router';
 
 import { ApiErrorService } from '../../core/api/api-error.service';
 import { MealsApiService } from '../../core/api/meals-api.service';
+import { NutritionPlansApiService } from '../../core/api/nutrition-plans-api.service';
 import { AuthService } from '../../core/auth/auth.service';
-import { MealReadDto } from '../../core/models/api.models';
+import { MealReadDto, NutritionPlanReadDto } from '../../core/models/api.models';
 import { NotificationService } from '../../core/services/notification.service';
 import { FormErrorComponent } from '../../shared/ui/form-error/form-error.component';
 import { PageHeaderComponent } from '../../shared/ui/page-header/page-header.component';
@@ -20,10 +23,12 @@ import { PageHeaderComponent } from '../../shared/ui/page-header/page-header.com
   selector: 'app-meals',
   imports: [
     FormErrorComponent,
+    MatAutocompleteModule,
     MatButtonModule,
     MatCardModule,
     MatFormFieldModule,
     MatInputModule,
+    MatOptionModule,
     MatProgressBarModule,
     MatTableModule,
     PageHeaderComponent,
@@ -36,13 +41,27 @@ export class MealsComponent implements OnInit {
   private readonly api = inject(MealsApiService);
   private readonly apiError = inject(ApiErrorService);
   private readonly auth = inject(AuthService);
+  private readonly nutritionPlansApi = inject(NutritionPlansApiService);
   private readonly notification = inject(NotificationService);
   private readonly route = inject(ActivatedRoute);
 
   protected readonly columns = ['name', 'calories', 'protein', 'carbs', 'fat', 'actions'];
   protected readonly meals = signal<MealReadDto[]>([]);
+  protected readonly plans = signal<NutritionPlanReadDto[]>([]);
   protected readonly loading = signal(false);
   protected readonly error = signal('');
+  protected readonly nutritionPlanSearch = new FormControl('', { nonNullable: true });
+  protected readonly nutritionPlanQuery = signal('');
+  protected readonly selectedNutritionPlan = signal<NutritionPlanReadDto | null>(null);
+  protected readonly filteredNutritionPlans = computed(() => {
+    const query = this.nutritionPlanQuery().trim().toLowerCase();
+
+    if (!query) {
+      return this.plans();
+    }
+
+    return this.plans().filter((plan) => this.planSearchText(plan).includes(query));
+  });
   protected readonly lookupForm = new FormGroup({
     nutritionPlanUuid: new FormControl('', { nonNullable: true, validators: [Validators.required] }),
   });
@@ -58,16 +77,46 @@ export class MealsComponent implements OnInit {
   protected formError = '';
 
   ngOnInit(): void {
-    const nutritionPlanUuid = this.route.snapshot.queryParamMap.get('nutritionPlanUuid');
-    if (nutritionPlanUuid) {
-      this.lookupForm.controls.nutritionPlanUuid.setValue(nutritionPlanUuid);
-      this.loadMealsByPlan();
-      return;
-    }
+    this.loadNutritionPlans();
 
-    if (this.auth.currentUser()?.role === 'ROLE_ADMIN') {
+    this.nutritionPlanSearch.valueChanges.subscribe((query) => {
+      this.nutritionPlanQuery.set(query);
+
+      const selected = this.selectedNutritionPlan();
+      if (selected && query !== this.planLabel(selected)) {
+        this.selectedNutritionPlan.set(null);
+        this.lookupForm.controls.nutritionPlanUuid.setValue('');
+      }
+    });
+
+    if (
+      this.auth.currentUser()?.role === 'ROLE_ADMIN' &&
+      !this.route.snapshot.queryParamMap.get('nutritionPlanUuid')
+    ) {
       this.loadAll();
     }
+  }
+
+  protected selectNutritionPlan(nutritionPlanUuid: string): void {
+    this.applyNutritionPlanUuid(nutritionPlanUuid, false);
+  }
+
+  protected loadNutritionPlans(): void {
+    this.nutritionPlansApi.getAccessible().subscribe({
+      next: (plans) => {
+        this.plans.set(plans);
+
+        const nutritionPlanUuid = this.route.snapshot.queryParamMap.get('nutritionPlanUuid');
+        if (nutritionPlanUuid) {
+          this.applyNutritionPlanUuid(nutritionPlanUuid, true);
+        }
+      },
+      error: (error: unknown) => this.notification.error(this.apiError.message(error)),
+    });
+  }
+
+  protected planLabel(plan: NutritionPlanReadDto): string {
+    return `${plan.title} (${plan.assignedUserUsername})`;
   }
 
   protected loadAll(): void {
@@ -141,5 +190,28 @@ export class MealsComponent implements OnInit {
       },
       error: (error: unknown) => this.notification.error(this.apiError.message(error)),
     });
+  }
+
+  private applyNutritionPlanUuid(nutritionPlanUuid: string, loadMeals: boolean): void {
+    const plan = this.plans().find((entry) => entry.uuid === nutritionPlanUuid);
+    this.lookupForm.controls.nutritionPlanUuid.setValue(nutritionPlanUuid);
+
+    if (plan) {
+      this.selectedNutritionPlan.set(plan);
+      this.nutritionPlanSearch.setValue(this.planLabel(plan), { emitEvent: false });
+      this.nutritionPlanQuery.set(this.planLabel(plan));
+    } else {
+      this.selectedNutritionPlan.set(null);
+      this.nutritionPlanSearch.setValue(nutritionPlanUuid, { emitEvent: false });
+      this.nutritionPlanQuery.set(nutritionPlanUuid);
+    }
+
+    if (loadMeals) {
+      this.loadMealsByPlan();
+    }
+  }
+
+  private planSearchText(plan: NutritionPlanReadDto): string {
+    return `${plan.title} ${plan.description} ${plan.coachUsername} ${plan.assignedUserUsername} ${plan.uuid}`.toLowerCase();
   }
 }
