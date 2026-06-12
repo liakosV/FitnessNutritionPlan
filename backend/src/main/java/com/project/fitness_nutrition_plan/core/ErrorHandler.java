@@ -2,6 +2,7 @@ package com.project.fitness_nutrition_plan.core;
 
 import com.project.fitness_nutrition_plan.core.exception.*;
 import com.project.fitness_nutrition_plan.dto.response.ErrorResponseDto;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -13,6 +14,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 @RestControllerAdvice
+@Slf4j
 public class ErrorHandler {
 
     @ExceptionHandler(AppObjectNotFoundException.class)
@@ -25,6 +27,11 @@ public class ErrorHandler {
                 HttpStatus.NOT_FOUND.value(),
                 LocalDateTime.now()
         );
+
+        log.warn("Resource not found: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.NOT_FOUND.value());
 
         return new ResponseEntity<>(dto, HttpStatus.NOT_FOUND);
     }
@@ -40,6 +47,11 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
 
+        log.warn("Resource already exists: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value());
+
         return new ResponseEntity<>(dto, HttpStatus.CONFLICT);
     }
 
@@ -53,6 +65,11 @@ public class ErrorHandler {
                 HttpStatus.BAD_REQUEST.value(),
                 LocalDateTime.now()
         );
+
+        log.warn("Resource has invalid argument: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.BAD_REQUEST.value());
 
         return new ResponseEntity<>(dto, HttpStatus.BAD_REQUEST);
     }
@@ -68,6 +85,11 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
 
+        log.warn("Resource has illegal state: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.CONFLICT.value());
+
         return new ResponseEntity<>(dto, HttpStatus.CONFLICT);
     }
 
@@ -81,6 +103,11 @@ public class ErrorHandler {
                 HttpStatus.UNAUTHORIZED.value(),
                 LocalDateTime.now()
         );
+
+        log.warn("Resource unauthorize: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.UNAUTHORIZED.value());
 
         return new ResponseEntity<>(dto, HttpStatus.UNAUTHORIZED);
     }
@@ -96,6 +123,11 @@ public class ErrorHandler {
                 LocalDateTime.now()
         );
 
+        log.warn("Resource access denied: code={}, message={}, status={}",
+                ex.getCode(),
+                ex.getMessage(),
+                HttpStatus.FORBIDDEN.value());
+
         return new ResponseEntity<>(dto, HttpStatus.FORBIDDEN);
     }
 
@@ -107,6 +139,12 @@ public class ErrorHandler {
                 ex.getMessage(),
                 HttpStatus.INTERNAL_SERVER_ERROR.value(),
                 LocalDateTime.now()
+        );
+
+        log.error("Unexpected internal server error. type={}, message={}",
+                ex.getClass().getSimpleName(),
+                ex.getMessage(),
+                ex
         );
 
         return new ResponseEntity<>(dto, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -121,6 +159,8 @@ public class ErrorHandler {
         ex.getBindingResult()
                 .getFieldErrors()
                 .forEach(error -> errors.put(error.getField(), error.getDefaultMessage()));
+
+        log.warn("Validation failed. errors: {}", errors);
 
         return new ResponseEntity<>(errors, HttpStatus.BAD_REQUEST);
     }
